@@ -1,0 +1,112 @@
+<div id="signDiv">
+	Please select a username: <input id="signDiv-username" type="text"></input><br>
+	<button id="signDiv-signIn">Sign In</button>
+</div>
+
+<div id="gameDiv" style="display:none;">
+	<div id="game" style="position:absolute;width:500px;height:500px">
+		<canvas id="ctx" width="500" height="500" style="position:absolute;border:1px solid #000000;"></canvas>		
+	</div>
+	
+	<div id="belowGame" style="margin-top:520px">	
+		<div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
+			<div id = "chat-text-title">Write Something Here</div>
+		</div>
+
+		<form id="chat-form">
+			<input id="chat-input" type="text" style="width:500px"></input>
+		</form>
+	</div>
+</div>
+
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+	// 
+	var WIDTH = 500;
+	var HEIGHT = 500;
+	var socket = io();
+	
+	//sign in
+	var signDiv = document.getElementById('signDiv');
+	var signDivUsername = document.getElementById('signDiv-username');
+	var signDivSignIn = document.getElementById('signDiv-signIn');
+	
+	signDivSignIn.onclick = function(){
+		signDivUsername.value = signDivUsername.value.replace(/\s/g,'');
+		if (signDivUsername.value.length > 2){
+			socket.emit('signIn',signDivUsername.value);
+		}
+		else
+			alert("Please enter a username with at 3 least characters");
+	}
+	socket.on('signInResponse',function(data){
+		if(data.success){
+			signDiv.style.display = 'none';
+			gameDiv.style.display = 'inline-block';
+		} else
+			alert("Username taken");
+	});
+	
+	//chat
+	var chatText = document.getElementById('chat-text');
+	var chatInput = document.getElementById('chat-input');
+	var chatForm = document.getElementById('chat-form');
+	
+	socket.on('addToChat',function(data){
+		chatText.innerHTML += '<div>' + data + '</div>';
+	});
+		
+	chatForm.onsubmit = function(e){
+		e.preventDefault();
+		if (e.length > 0){
+			socket.emit('sendMsgToServer',chatInput.value);
+			chatInput.value = '';		
+		}
+	}
+	
+	var ctx = document.getElementById("ctx").getContext("2d");
+	
+	document.onkeydown = function(event){
+		if(event.keyCode === 68)	//d
+			socket.emit('keyPress',{inputId:'right',state:true});
+		else if(event.keyCode === 83)	//s
+			socket.emit('keyPress',{inputId:'down',state:true});
+		else if(event.keyCode === 65) //a
+			socket.emit('keyPress',{inputId:'left',state:true});
+		else if(event.keyCode === 87) // w
+			socket.emit('keyPress',{inputId:'up',state:true});
+			
+	}
+	document.onkeyup = function(event){
+		if(event.keyCode === 68)	//d
+			socket.emit('keyPress',{inputId:'right',state:false});
+		else if(event.keyCode === 83)	//s
+			socket.emit('keyPress',{inputId:'down',state:false});
+		else if(event.keyCode === 65) //a
+			socket.emit('keyPress',{inputId:'left',state:false});
+		else if(event.keyCode === 87) // w
+			socket.emit('keyPress',{inputId:'up',state:false});
+	}
+	
+	document.onmousedown = function(event){
+		socket.emit('keyPress',{inputId:'attack',state:true});
+	}
+	document.onmouseup = function(event){
+		socket.emit('keyPress',{inputId:'attack',state:false});
+	}
+	document.onmousemove = function(event){
+		var x = -250 + event.clientX - 8;
+		var y = -250 + event.clientY - 8;
+		var angle = Math.atan2(y,x) / Math.PI * 180;
+		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
+	}
+	
+	document.oncontextmenu = function(event){
+		event.preventDefault();
+	}
+</script>
+
+
+
+
+
