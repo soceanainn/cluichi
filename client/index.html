@@ -28,9 +28,22 @@
 
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
+	
+	var socket = io();
+	
+	// Disable right-click on a mouse bringing up a context menu
+	document.oncontextmenu = function(event){
+		event.preventDefault();
+	}
+	
+	//----------------------------------------
+	// 			Set Width / Height
+	// ---------------------------------------
+	
+	// Set WIDTH/HEIGHT
+	// px value (e.g. '800') or percentage (e.g. 80%)
 	var WIDTH = '800';
 	var HEIGHT = '500';
-	var socket = io();
 	
 	setWidthHeight(WIDTH, HEIGHT);
 	
@@ -42,9 +55,6 @@
 		});
 	}
 	
-	//----------------------------------------
-	// 			Set Width / Height
-	// ---------------------------------------
 	function setWidthHeight(WIDTH, HEIGHT){
 		//Convert Percentages if necessary
 		if (isNaN(WIDTH))
@@ -144,9 +154,4 @@
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
 	}
 	*/
-	
-	// Disable right-click on a mouse bringing up a context menu
-	document.oncontextmenu = function(event){
-		event.preventDefault();
-	}
 </script>
