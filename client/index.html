@@ -1,35 +1,47 @@
+<!-- Username Selection -->
 <div id="signDiv">
 	Please select a username: <input id="signDiv-username" type="text"></input><br>
 	<button id="signDiv-signIn">Sign In</button>
 </div>
 
+<!-- Game Screen -->
 <div id="gameDiv" style="display:none;">
-	<div id="game" style="position:absolute;width:500px;height:500px">
-		<canvas id="ctx" width="500" height="500" style="position:absolute;border:1px solid #000000;"></canvas>		
+	<!-- Game Canvas -->
+	<div id="game" style="position:absolute;">
+		<canvas id="ctx" style="position:absolute;border:1px solid #000000;"></canvas>
 	</div>
 	
-	<div id="belowGame" style="margin-top:520px">	
-		<div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
-			<div id = "chat-text-title">Write Something Here</div>
+	<!-- Chat -->
+	<div id="chat">	
+		<hr/>
+		<div id = "chat-text-title" style= "text-align: center;">Write Something Here</div>
+		<hr />
+		<div id="chat-text" style="overflow-y:scroll">
+			
 		</div>
 
 		<form id="chat-form">
-			<input id="chat-input" type="text" style="width:500px"></input>
+			<input id="chat-input" type="text"></input>
 		</form>
 	</div>
 </div>
 
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
-	// 
-	var WIDTH = 500;
-	var HEIGHT = 500;
+	var WIDTH = '800';
+	var HEIGHT = '500';
 	var socket = io();
 	
-	//sign in
+	document.getElementById('ctx').style.width = WIDTH;
+	document.getElementById('ctx').style.height = HEIGHT;
+	
+	//----------------------------------------
+	// 				Username Selection
+	// ---------------------------------------
 	var signDiv = document.getElementById('signDiv');
 	var signDivUsername = document.getElementById('signDiv-username');
 	var signDivSignIn = document.getElementById('signDiv-signIn');
+	
 	
 	signDivSignIn.onclick = function(){
 		signDivUsername.value = signDivUsername.value.replace(/\s/g,'');
@@ -47,10 +59,20 @@
 			alert("Username taken");
 	});
 	
-	//chat
+	//----------------------------------------
+	// 				Chat
+	// ---------------------------------------
+	var chatDiv = document.getElementById('chat');
 	var chatText = document.getElementById('chat-text');
 	var chatInput = document.getElementById('chat-input');
 	var chatForm = document.getElementById('chat-form');
+	
+	
+	chatText.style.width = WIDTH;
+	chatInput.style.width = WIDTH;
+	chatDiv.style.marginTop= HEIGHT * 1.1;
+	chatForm.style.width= WIDTH;
+	chatText.style.height = WIDTH/5;
 	
 	socket.on('addToChat',function(data){
 		chatText.innerHTML += '<div>' + data + '</div>';
@@ -58,14 +80,16 @@
 		
 	chatForm.onsubmit = function(e){
 		e.preventDefault();
-		if (e.length > 0){
+		if (chatInput.value.length > 0){
 			socket.emit('sendMsgToServer',chatInput.value);
 			chatInput.value = '';		
 		}
 	}
 	
-	var ctx = document.getElementById("ctx").getContext("2d");
-	
+	/*
+	//----------------------------------------
+	// 				Controls
+	// ---------------------------------------
 	document.onkeydown = function(event){
 		if(event.keyCode === 68)	//d
 			socket.emit('keyPress',{inputId:'right',state:true});
@@ -100,13 +124,10 @@
 		var angle = Math.atan2(y,x) / Math.PI * 180;
 		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
 	}
+	*/
 	
+	// Disable right-click on a mouse bringing up a context menu
 	document.oncontextmenu = function(event){
 		event.preventDefault();
 	}
 </script>
-
-
-
-
-
