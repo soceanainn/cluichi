@@ -1,4 +1,4 @@
-<!-- Username Selection -->
+<!-- Usernme Selection -->
 <div id="signDiv">
 	Please select a username: <input id="signDiv-username" type="text"></input><br>
 	<button id="signDiv-signIn">Sign In</button>
@@ -32,8 +32,34 @@
 	var HEIGHT = '500';
 	var socket = io();
 	
-	document.getElementById('ctx').style.width = WIDTH;
-	document.getElementById('ctx').style.height = HEIGHT;
+	setWidthHeight(WIDTH, HEIGHT);
+	
+	// Set elements to respond upon resizing of window if WIDTH / HEIGHT is a percentage
+	if (isNaN(WIDTH) || isNaN(HEIGHT)){
+		window.addEventListener('resize', function(){
+			alert("hello");
+			setWidthHeight(WIDTH, HEIGHT);
+		});
+	}
+	
+	//----------------------------------------
+	// 			Set Width / Height
+	// ---------------------------------------
+	function setWidthHeight(WIDTH, HEIGHT){
+		//Convert Percentages if necessary
+		if (isNaN(WIDTH))
+			WIDTH = WIDTH.substring(0, WIDTH.indexOf("%")) * window.innerWidth / 100;
+		if (isNaN(HEIGHT))
+			HEIGHT = HEIGHT.substring(0, HEIGHT.indexOf("%")) * window.innerHeight /100;
+			
+		document.getElementById('ctx').style.width = WIDTH;
+		document.getElementById('ctx').style.height = HEIGHT;
+		document.getElementById('chat-text').style.width = WIDTH;
+		document.getElementById('chat-input').style.width = WIDTH;
+		document.getElementById('chat').style.marginTop= HEIGHT * 1.1;
+		document.getElementById('chat-form').style.width= WIDTH;
+		document.getElementById('chat-text').style.height = WIDTH/5;
+	}
 	
 	//----------------------------------------
 	// 				Username Selection
@@ -66,13 +92,6 @@
 	var chatText = document.getElementById('chat-text');
 	var chatInput = document.getElementById('chat-input');
 	var chatForm = document.getElementById('chat-form');
-	
-	
-	chatText.style.width = WIDTH;
-	chatInput.style.width = WIDTH;
-	chatDiv.style.marginTop= HEIGHT * 1.1;
-	chatForm.style.width= WIDTH;
-	chatText.style.height = WIDTH/5;
 	
 	socket.on('addToChat',function(data){
 		chatText.innerHTML += '<div>' + data + '</div>';
