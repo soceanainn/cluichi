@@ -53,8 +53,8 @@ io.sockets.on('connection', function(socket){
 	socket.on('createGame',function(name){
 		if (findGame(name)!=-1){
 				socket.emit('createGameResponse',{success:false});		
-		} else { // If game name is free add game to list
-			createGame(name, socket);
+		} else { // If game name is free join game as first user
+			joinGame(name, socket);
 			socket.emit('createGameResponse',{success:true});
 		}		
 	});
@@ -63,7 +63,7 @@ io.sockets.on('connection', function(socket){
 	socket.on('joinGame',function(name){
 		if (findGame(name)==-1){
 				socket.emit('joinGameResponse',{success:false});		
-		} else { // If game name is free add game to list
+		} else { // If game already has (a) player(s) join game as another user
 			joinGame(name, socket);
 			socket.emit('joinGameResponse',{success:true});
 		}		
@@ -73,7 +73,6 @@ io.sockets.on('connection', function(socket){
 	socket.on('sendMsgToServer',function(data){ // When user sends a message
 		for(var i in SOCKET_LIST){
 			var str = PLAYER_LIST[socket.id] + ': ' + data;
-			console.log(str);
 			SOCKET_LIST[i].emit('addToChat',str);
 		}
 	});
@@ -83,7 +82,6 @@ io.sockets.on('connection', function(socket){
 		for(var i in SOCKET_LIST){
 			if (GAME_LIST[socket.id]==GAME_LIST[i]){
 				var str = PLAYER_LIST[socket.id] + ': ' + data;
-				console.log(str);
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
 		}
@@ -134,10 +132,6 @@ addUser = function(name, socket){
 
 findGame = function(name){
 	return GAME_LIST.indexOf(name);
-}
-
-createGame = function(name, socket){
-	GAME_LIST[socket.id] = name;
 }
 
 joinGame = function(name, socket){
