@@ -27,12 +27,18 @@ var SOCKET_LIST = [];
 var playerList = [];
 
 io.sockets.on('connection', function(socket){
+	// Register Socket upon Connection
 	do {//Generate a random socket id for each new connection
 		socket.id = Math.floor(Math.random()*numofPlayers);
-	} while (SOCKET_LIST[socket.id] != null)
-		
+	} while (SOCKET_LIST[socket.id] != null)		
 	SOCKET_LIST[socket.id] = socket;
 	
+	// When user disconnects
+	socket.on('disconnect',function(){ // When a user disconnects 
+		disconnectUser(socket);
+	});
+	
+	// User Sign In
 	socket.on('signIn',function(username){ // When user tries to sign in
 		if (isUsernameTaken(username)){
 				socket.emit('signInResponse',{success:false});		
@@ -42,6 +48,7 @@ io.sockets.on('connection', function(socket){
 		}		
 	});
 	
+	//	Chat Functionality
 	socket.on('sendMsgToServer',function(data){ // When user sends a message
 		for(var i in SOCKET_LIST){
 			var str = playerList[socket.id] + ': ' + data;
@@ -49,21 +56,71 @@ io.sockets.on('connection', function(socket){
 			SOCKET_LIST[i].emit('addToChat',str);
 		}
 	});
-
-	socket.on('disconnect',function(){ // When a user disconnects 
-		disconnectUser(socket);
+	
+	// Key Presses for controls
+	socket.on('keyPress', function(data){ //When a user presses a key
+		if (data.inputId === 'right'){
+			rightClick(data.state);
+		}
+		else if (data.inputId === 'down'){
+			downClick(data.state);
+		}
+		else if (data.inputId === 'left'){
+			leftClick(data.state);
+		}
+		else if (data.inputId === 'up'){
+			upClick(data.state);
+		}
+	});
+	
+	// Track mouse for controls
+	var mousePosition;
+	socket.on('mouseEvent', function(data){
+		if (data.inputId==='mousePosition'){
+			mousePosition = mousePosition.state;
+		}
+		
+		else if (data.inputId==='mouseClick'){
+			mouseClick(data.state, mousePosition);
+		}
 	});
 });
 
-function isUsernameTaken(name){
+isUsernameTaken= function(name){
 	if (playerList.indexOf(name)==-1) return(false);
 	else return(true);
 }
-function addUser(name, socket){
+
+addUser = function(name, socket){
 	playerList[socket.id] = name;
 }
 
-function disconnectUser(socket){
+disconnectUser = function (socket){
 	delete playerList[socket.id];
 	delete SOCKET_LIST[socket.id]; 
+}
+
+//---------------------------------------------
+//				CONTROLS
+//---------------------------------------------
+
+upClick = function(pressed){
+	if(pressed) // Up key is pressed
+}
+
+downClick = function(pressed){
+	if(pressed) // Down key is pressed
+}
+
+leftClick = function(pressed){
+	if(pressed) // Left key is pressed
+}
+
+rightClick = function(pressed){
+	if(pressed) // Right key is pressed
+}
+
+mouseClick = function(pressed, position){
+	var x = position.x;
+	var y = position.y;
 }

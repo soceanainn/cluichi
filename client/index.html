@@ -13,25 +13,22 @@
 	
 	<!-- Chat -->
 	<div id="chat">	
-		<hr/>
-		<div id = "chat-text-title" style= "text-align: center;">Write Something Here</div>
-		<hr />
-		<div id="chat-text" style="overflow-y:scroll">
-			
-		</div>
-
+		<hr/><div id = "chat-text-title" style= "text-align: center;">Write Something Here</div><hr />
+		<div id="chat-text" style="overflow-y:scroll"></div>
 		<form id="chat-form">
 			<input id="chat-input" type="text"></input>
 		</form>
 	</div>
 </div>
 
+<!-- Socket.io -->
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
 <script>
 	
 	var socket = io();
 	
-	// Disable right-click on a mouse bringing up a context menu
+	// Disable context menu on mouse right click
 	document.oncontextmenu = function(event){
 		event.preventDefault();
 	}
@@ -66,18 +63,18 @@
 		document.getElementById('ctx').style.height = HEIGHT;
 		document.getElementById('chat-text').style.width = WIDTH;
 		document.getElementById('chat-input').style.width = WIDTH;
-		document.getElementById('chat').style.marginTop= HEIGHT * 1.1;
+		document.getElementById('chat').style.marginTop= HEIGHT + 20;
 		document.getElementById('chat-form').style.width= WIDTH;
-		document.getElementById('chat-text').style.height = WIDTH/5;
+		document.getElementById('chat-text').style.height = HEIGHT/5;
 	}
 	
 	//----------------------------------------
 	// 				Username Selection
 	// ---------------------------------------
+	var gameDiv = document.getElementById('gameDiv');
 	var signDiv = document.getElementById('signDiv');
 	var signDivUsername = document.getElementById('signDiv-username');
 	var signDivSignIn = document.getElementById('signDiv-signIn');
-	
 	
 	signDivSignIn.onclick = function(){
 		signDivUsername.value = signDivUsername.value.replace(/\s/g,'');
@@ -87,12 +84,26 @@
 		else
 			alert("Please enter a username with at 3 least characters");
 	}
+	
 	socket.on('signInResponse',function(data){
 		if(data.success){
 			signDiv.style.display = 'none';
 			gameDiv.style.display = 'inline-block';
+			// When chat is in use
+			selectChatInput();
 		} else
 			alert("Username taken");
+	});
+	
+	// Automatically Select Text Input Area
+	signDivUsername.focus();
+	signDivUsername.select();
+	
+	// Submit when enter is pressed
+	signDiv.addEventListener("keydown", function(event) {
+		if (event.keyCode == 13) {
+			signDivSignIn.click();
+		}
 	});
 	
 	//----------------------------------------
@@ -102,7 +113,7 @@
 	var chatText = document.getElementById('chat-text');
 	var chatInput = document.getElementById('chat-input');
 	var chatForm = document.getElementById('chat-form');
-	
+		
 	socket.on('addToChat',function(data){
 		chatText.innerHTML += '<div>' + data + '</div>';
 	});
@@ -115,43 +126,50 @@
 		}
 	}
 	
+	selectChatInput = function(){
+		chatInput.focus();
+		chatInput.select();
+	}
+	
 	/*
 	//----------------------------------------
 	// 				Controls
 	// ---------------------------------------
 	document.onkeydown = function(event){
-		if(event.keyCode === 68)	//d
+		if(event.keyCode === 68)	//d is 68, right is 39
 			socket.emit('keyPress',{inputId:'right',state:true});
-		else if(event.keyCode === 83)	//s
+		else if(event.keyCode === 83)	//s is 83, down is 40
 			socket.emit('keyPress',{inputId:'down',state:true});
-		else if(event.keyCode === 65) //a
+		else if(event.keyCode === 65) //a is 65, left is 37
 			socket.emit('keyPress',{inputId:'left',state:true});
-		else if(event.keyCode === 87) // w
+		else if(event.keyCode === 87) // w is 87, up is 38
 			socket.emit('keyPress',{inputId:'up',state:true});
 			
 	}
 	document.onkeyup = function(event){
-		if(event.keyCode === 68)	//d
+		if(event.keyCode === 68)	//d is 68, right is 39
 			socket.emit('keyPress',{inputId:'right',state:false});
-		else if(event.keyCode === 83)	//s
+		else if(event.keyCode === 83)	//s is 83, down is 40
 			socket.emit('keyPress',{inputId:'down',state:false});
-		else if(event.keyCode === 65) //a
+		else if(event.keyCode === 65) //a is 65, left is 37
 			socket.emit('keyPress',{inputId:'left',state:false});
-		else if(event.keyCode === 87) // w
+		else if(event.keyCode === 87) // w is 87, up is 38
 			socket.emit('keyPress',{inputId:'up',state:false});
 	}
 	
 	document.onmousedown = function(event){
-		socket.emit('keyPress',{inputId:'attack',state:true});
+		socket.emit('mouseEvent',{inputId:'mouseClick',state:true});
 	}
+	
 	document.onmouseup = function(event){
-		socket.emit('keyPress',{inputId:'attack',state:false});
+		socket.emit('mouseEvent',{inputId:'mouseClick',state:false});
 	}
+	
 	document.onmousemove = function(event){
-		var x = -250 + event.clientX - 8;
-		var y = -250 + event.clientY - 8;
-		var angle = Math.atan2(y,x) / Math.PI * 180;
-		socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
+		var x = event.clientX;
+		var y = event.clientY;
+		var position = x:x, y:y;
+		socket.emit('mouseEvent', {inputId:'mousePosition',state: position});
 	}
 	*/
 </script>
