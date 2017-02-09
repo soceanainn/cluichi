@@ -20,8 +20,13 @@
 	
 	<!-- Chat -->
 	<div id="chat">	
-		<hr/><div id = "chat-text-title" style= "text-align: center;">Write Something Here</div><hr />
-		<div id="chat-text" style="overflow-y:scroll"></div>
+		<hr/><div id = "chat-text-title" style= "text-align: center;"> Write Something Here
+		<select name="chats" id = "chats" onchange = "displayChat()">
+			<option value="game"> In-Game Chat</option>
+			<option value="universal">Universal Chat</option>
+		</select></div><hr />
+		<div id="chat-text" style="overflow-y:scroll; display:none"></div>
+		<div id="chat-group" style="overflow-y:scroll"></div>
 		<form id="chat-form">
 			<input id="chat-input" type="text"></input>
 		</form>
@@ -69,10 +74,13 @@
 		document.getElementById('ctx').style.width = WIDTH;
 		document.getElementById('ctx').style.height = HEIGHT;
 		document.getElementById('chat-text').style.width = WIDTH;
+		document.getElementById('chat-group').style.width = WIDTH;
 		document.getElementById('chat-input').style.width = WIDTH;
 		document.getElementById('chat').style.marginTop = parseInt(HEIGHT) + 20;
 		document.getElementById('chat-form').style.width= WIDTH;
 		document.getElementById('chat-text').style.height = parseInt(HEIGHT)/5;
+		document.getElementById('chat-group').style.height = parseInt(HEIGHT)/5;
+		
 	}
 	
 	//----------------------------------------
@@ -164,15 +172,34 @@
 	var chatText = document.getElementById('chat-text');
 	var chatInput = document.getElementById('chat-input');
 	var chatForm = document.getElementById('chat-form');
-		
+	var groupChat = document.getElementById('chat-group');
+	var chats = document.getElementById('chats');
+	
 	socket.on('addToChat',function(data){
 		chatText.innerHTML += '<div>' + data + '</div>';
 	});
+	
+	socket.on('addToGame', function(data){
+		groupChat.innerHTML += '<div>' + data + '</div>';
+	});
+	
+	displayChat = function(){
+		if (chats.value==="universal"){
+			chatText.style.display = 'inline-block';
+			groupChat.style.display = 'none';
+		}else {
+			chatText.style.display = 'none';
+			groupChat.style.display = 'inline-block';
+		}
+	}
 		
 	chatForm.onsubmit = function(e){
 		e.preventDefault();
 		if (chatInput.value.length > 0){
-			socket.emit('sendMsgToServer',chatInput.value);
+			if (chats.value==="universal")
+				socket.emit('sendMsgToServer',chatInput.value);
+			else
+				socket.emit('sendMsgToGame', chatInput.value);
 			chatInput.value = '';		
 		}
 	}

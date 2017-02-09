@@ -69,12 +69,23 @@ io.sockets.on('connection', function(socket){
 		}		
 	});
 	
-	//	Chat Functionality
+	//	Universal Chat
 	socket.on('sendMsgToServer',function(data){ // When user sends a message
 		for(var i in SOCKET_LIST){
 			var str = PLAYER_LIST[socket.id] + ': ' + data;
 			console.log(str);
 			SOCKET_LIST[i].emit('addToChat',str);
+		}
+	});
+	
+	//	In-game Chat
+	socket.on('sendMsgToGame',function(data){ // When user sends a message
+		for(var i in SOCKET_LIST){
+			if (GAME_LIST[socket.id]==GAME_LIST[i]){
+				var str = PLAYER_LIST[socket.id] + ': ' + data;
+				console.log(str);
+				SOCKET_LIST[i].emit('addToGame',str);
+			}
 		}
 	});
 	
