@@ -22,9 +22,10 @@ var io = require('socket.io')(serv,{});
 // Constant for number of sockets (players) allowed at a time
 var numofPlayers = 100;
 
-// Keep track of sockets and players usernames in use
+// Keep track of sockets, players usernames, and game names in use
 var SOCKET_LIST = [];
-var playerList = [];
+var PLAYER_LIST = [];
+var GAME_LIST = [];
 
 io.sockets.on('connection', function(socket){
 	// Register Socket upon Connection
@@ -34,12 +35,12 @@ io.sockets.on('connection', function(socket){
 	SOCKET_LIST[socket.id] = socket;
 	
 	// When user disconnects
-	socket.on('disconnect',function(){ // When a user disconnects 
+	socket.on('disconnect',function(){
 		disconnectUser(socket);
 	});
 	
 	// User Sign In
-	socket.on('signIn',function(username){ // When user tries to sign in
+	socket.on('signIn',function(username){
 		if (isUsernameTaken(username)){
 				socket.emit('signInResponse',{success:false});		
 		} else { // If username is free add user
@@ -48,17 +49,37 @@ io.sockets.on('connection', function(socket){
 		}		
 	});
 	
+	// Game Creation
+	socket.on('createGame',function(name){
+		if (findGame(name)!=-1){
+				socket.emit('createGameResponse',{success:false});		
+		} else { // If game name is free add game to list
+			createGame(name, socket);
+			socket.emit('createGameResponse',{success:true});
+		}		
+	});
+	
+	// Joining a Game
+	socket.on('joinGame',function(name){
+		if (findGame(name)==-1){
+				socket.emit('joinGameResponse',{success:false});		
+		} else { // If game name is free add game to list
+			joinGame(name, socket);
+			socket.emit('joinGameResponse',{success:true});
+		}		
+	});
+	
 	//	Chat Functionality
 	socket.on('sendMsgToServer',function(data){ // When user sends a message
 		for(var i in SOCKET_LIST){
-			var str = playerList[socket.id] + ': ' + data;
+			var str = PLAYER_LIST[socket.id] + ': ' + data;
 			console.log(str);
 			SOCKET_LIST[i].emit('addToChat',str);
 		}
 	});
 	
 	// Key Presses for controls
-	socket.on('keyPress', function(data){ //When a user presses a key
+	socket.on('keyPress', function(data){
 		if (data.inputId === 'right'){
 			rightClick(data.state);
 		}
@@ -86,24 +107,36 @@ io.sockets.on('connection', function(socket){
 	});
 });
 
+disconnectUser = function (socket){
+	delete PLAYER_LIST[socket.id];
+	delete SOCKET_LIST[socket.id]; 
+}
+
 isUsernameTaken= function(name){
-	if (playerList.indexOf(name)==-1) return(false);
+	if (PLAYER_LIST.indexOf(name)==-1) return(false);
 	else return(true);
 }
 
 addUser = function(name, socket){
-	playerList[socket.id] = name;
+	PLAYER_LIST[socket.id] = name;
 }
 
-disconnectUser = function (socket){
-	delete playerList[socket.id];
-	delete SOCKET_LIST[socket.id]; 
+findGame = function(name){
+	return GAME_LIST.indexOf(name);
+}
+
+createGame = function(name, socket){
+	GAME_LIST[socket.id] = name;
+}
+
+joinGame = function(name, socket){
+	GAME_LIST[socket.id] = name;
 }
 
 //---------------------------------------------
 //				CONTROLS
 //---------------------------------------------
-
+/*
 upClick = function(pressed){
 	if(pressed) // Up key is pressed
 }
@@ -123,4 +156,4 @@ rightClick = function(pressed){
 mouseClick = function(pressed, position){
 	var x = position.x;
 	var y = position.y;
-}
+}*/

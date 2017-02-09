@@ -1,7 +1,14 @@
-<!-- Usernme Selection -->
+<!-- Username Selection -->
 <div id="signDiv">
 	Please select a username: <input id="signDiv-username" type="text"></input><br>
 	<button id="signDiv-signIn">Sign In</button>
+</div>
+
+<!-- Create or join a game -->
+<div id="gameSelect" style="display:none">
+	Please enter a game name: <input id="gameSelect-game" type="text"></input><br>
+	<button id="gameSelect-create">Create</button>
+	<button id="gameSelect-join">Join</button>
 </div>
 
 <!-- Game Screen -->
@@ -63,15 +70,15 @@
 		document.getElementById('ctx').style.height = HEIGHT;
 		document.getElementById('chat-text').style.width = WIDTH;
 		document.getElementById('chat-input').style.width = WIDTH;
-		document.getElementById('chat').style.marginTop= HEIGHT + 20;
+		document.getElementById('chat').style.marginTop = parseInt(HEIGHT) + 20;
 		document.getElementById('chat-form').style.width= WIDTH;
-		document.getElementById('chat-text').style.height = HEIGHT/5;
+		document.getElementById('chat-text').style.height = parseInt(HEIGHT)/5;
 	}
 	
 	//----------------------------------------
 	// 				Username Selection
 	// ---------------------------------------
-	var gameDiv = document.getElementById('gameDiv');
+	var gameSelect = document.getElementById('gameSelect');
 	var signDiv = document.getElementById('signDiv');
 	var signDivUsername = document.getElementById('signDiv-username');
 	var signDivSignIn = document.getElementById('signDiv-signIn');
@@ -88,9 +95,10 @@
 	socket.on('signInResponse',function(data){
 		if(data.success){
 			signDiv.style.display = 'none';
-			gameDiv.style.display = 'inline-block';
-			// When chat is in use
-			selectChatInput();
+			gameSelect.style.display = 'inline-block';
+			//Automatically select text input area
+			document.getElementById('gameSelect-game').focus();
+			document.getElementById('gameSelect-game').select();
 		} else
 			alert("Username taken");
 	});
@@ -105,6 +113,49 @@
 			signDivSignIn.click();
 		}
 	});
+	
+	//----------------------------------------
+	// 				Game Selection
+	// ---------------------------------------
+	var gameDiv = document.getElementById('gameDiv');
+	var gameSelect = document.getElementById('gameSelect');
+	var gameSelectGame = document.getElementById('gameSelect-game');
+	var gameSelectCreate = document.getElementById('gameSelect-create');
+	var gameSelectJoin = document.getElementById('gameSelect-join');
+	
+	gameSelectCreate.onclick = function(){
+		gameSelectGame.value = gameSelectGame.value.replace(/\s/g,'');
+		if (gameSelectGame.value.length > 3){
+			socket.emit('createGame',gameSelectGame.value);
+		}
+		else
+			alert("Please enter a game name with at 4 least characters");
+	}
+	
+	socket.on('createGameResponse',function(data){
+		if(data.success){
+			gameSelect.style.display = 'none';
+			gameDiv.style.display = 'inline-block';
+		} else
+			alert("Game name taken");
+	});	
+	
+	gameSelectJoin.onclick = function(){
+		gameSelectGame.value = gameSelectGame.value.replace(/\s/g,'');
+		if (gameSelectGame.value.length > 3){
+			socket.emit('joinGame',gameSelectGame.value);
+		}
+		else
+			alert("Please enter a game name with at 4 least characters");
+	}
+	
+	socket.on('joinGameResponse',function(data){
+		if(data.success){
+			gameSelect.style.display = 'none';
+			gameDiv.style.display = 'inline-block';
+		} else
+			alert("Game doesn't exist");
+	});	
 	
 	//----------------------------------------
 	// 				Chat
@@ -125,12 +176,7 @@
 			chatInput.value = '';		
 		}
 	}
-	
-	selectChatInput = function(){
-		chatInput.focus();
-		chatInput.select();
-	}
-	
+		
 	/*
 	//----------------------------------------
 	// 				Controls
