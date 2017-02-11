@@ -7,6 +7,7 @@
 <!-- Create or join a game -->
 <div id="gameSelect" style="display:none">
 	Please enter a game name: <input id="gameSelect-game" type="text"></input><br>
+	Enter a password(optional): <input id="gameSelect-password" type = "text"></input><br>
 	<button id="gameSelect-create">Create</button>
 	<button id="gameSelect-join">Join</button>
 </div>
@@ -50,8 +51,8 @@
 	// ---------------------------------------
 	
 	// Set WIDTH/HEIGHT
-	// px value (e.g. '800') or percentage (e.g. 80%)
-	var WIDTH = '800';
+	// px value (e.g. '800') or percentage (e.g. '80%')
+	var WIDTH = '90%';
 	var HEIGHT = '500';
 	
 	setWidthHeight(WIDTH, HEIGHT);
@@ -59,7 +60,6 @@
 	// Set elements to respond upon resizing of window if WIDTH / HEIGHT is a percentage
 	if (isNaN(WIDTH) || isNaN(HEIGHT)){
 		window.addEventListener('resize', function(){
-			alert("hello");
 			setWidthHeight(WIDTH, HEIGHT);
 		});
 	}
@@ -130,11 +130,12 @@
 	var gameSelectGame = document.getElementById('gameSelect-game');
 	var gameSelectCreate = document.getElementById('gameSelect-create');
 	var gameSelectJoin = document.getElementById('gameSelect-join');
+	var gameSelectPassword = document.getElementById('gameSelect-password');
 	
 	gameSelectCreate.onclick = function(){
 		gameSelectGame.value = gameSelectGame.value.replace(/\s/g,'');
 		if (gameSelectGame.value.length > 3){
-			socket.emit('createGame',gameSelectGame.value);
+			socket.emit('createGame',gameSelectGame.value, gameSelectPassword.value);
 		}
 		else
 			alert("Please enter a game name with at 4 least characters");
@@ -151,7 +152,7 @@
 	gameSelectJoin.onclick = function(){
 		gameSelectGame.value = gameSelectGame.value.replace(/\s/g,'');
 		if (gameSelectGame.value.length > 3){
-			socket.emit('joinGame',gameSelectGame.value);
+			socket.emit('joinGame',gameSelectGame.value, gameSelectPassword.value);
 		}
 		else
 			alert("Please enter a game name with at 4 least characters");
@@ -162,7 +163,7 @@
 			gameSelect.style.display = 'none';
 			gameDiv.style.display = 'inline-block';
 		} else
-			alert("Game doesn't exist");
+			alert("Game doesn't exist or invalid password");
 	});	
 	
 	//----------------------------------------

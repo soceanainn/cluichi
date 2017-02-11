@@ -22,10 +22,11 @@ var io = require('socket.io')(serv,{});
 // Constant for number of sockets (players) allowed at a time
 var numofPlayers = 100;
 
-// Keep track of sockets, players usernames, and game names in use
+// Keep track of sockets, players usernames, game names, and passwords in use
 var SOCKET_LIST = [];
 var PLAYER_LIST = [];
 var GAME_LIST = [];
+var PASSWORD_LIST = [];
 
 io.sockets.on('connection', function(socket){
 	// Register Socket upon Connection
@@ -50,22 +51,25 @@ io.sockets.on('connection', function(socket){
 	});
 	
 	// Game Creation
-	socket.on('createGame',function(name){
+	socket.on('createGame',function(name, gamePassword){
 		if (findGame(name)!=-1){
 				socket.emit('createGameResponse',{success:false});		
 		} else { // If game name is free join game as first user
-			joinGame(name, socket);
+			joinGame(name, socket, gamePassword);
 			socket.emit('createGameResponse',{success:true});
 		}		
 	});
 	
 	// Joining a Game
-	socket.on('joinGame',function(name){
+	socket.on('joinGame',function(name, gamePassword){
 		if (findGame(name)==-1){
 				socket.emit('joinGameResponse',{success:false});		
 		} else { // If game already has (a) player(s) join game as another user
-			joinGame(name, socket);
-			socket.emit('joinGameResponse',{success:true});
+			if(PASSWORD_LIST[findGame(name)] === gamePassword){
+				joinGame(name, socket, gamePassword);
+				socket.emit('joinGameResponse',{success:true});
+			} else 
+				socket.emit('joinGameResponse',{success:false});
 		}		
 	});
 	
@@ -119,6 +123,7 @@ io.sockets.on('connection', function(socket){
 disconnectUser = function (socket){
 	delete PLAYER_LIST[socket.id];
 	delete SOCKET_LIST[socket.id]; 
+	delete GAME_LIST[socket.id];
 }
 
 isUsernameTaken= function(name){
@@ -134,8 +139,9 @@ findGame = function(name){
 	return GAME_LIST.indexOf(name);
 }
 
-joinGame = function(name, socket){
+joinGame = function(name, socket, gamePassword){
 	GAME_LIST[socket.id] = name;
+	PASSWORD_LIST[socket.id] = gamePassword;
 }
 
 //---------------------------------------------
