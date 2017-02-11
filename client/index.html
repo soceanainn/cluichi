@@ -15,6 +15,7 @@
 	Enter a password(optional): <input id="gameSelect-password" type = "text"></input><br>
 	<button id="gameSelect-create">Create</button>
 	<button id="gameSelect-join">Join</button>
+	<br><div id="gameList"></div>
 </div>
 
 <!-- Game Screen -->
@@ -115,6 +116,8 @@
 		if(data.success){
 			signDiv.style.display = 'none';
 			gameSelect.style.display = 'inline-block';
+			showPublicGames();
+			setInterval(showPublicGames, 6000);
 			//Automatically select text input area
 			document.getElementById('gameSelect-game').focus();
 			document.getElementById('gameSelect-game').select();
@@ -152,10 +155,19 @@
 			alert("Please enter a game name with at 4 least characters");
 	}
 	
+	showPublicGames = function() {
+		socket.emit('gameSelection');
+	}
+	
+	socket.on('publicGames', function (gameList){
+		document.getElementById('gameList').innerHTML = "<div>" + gameList + "</div>";
+	});
+	
 	socket.on('createGameResponse',function(data){
 		if(data.success){
 			gameSelect.style.display = 'none';
 			gameDiv.style.display = 'inline-block';
+			clearInterval(showPublicGames);
 		} else
 			alert("Game name taken");
 	});	
@@ -173,6 +185,7 @@
 		if(data.success){
 			gameSelect.style.display = 'none';
 			gameDiv.style.display = 'inline-block';
+			clearInterval(showPublicGames);
 		} else {
 			if (data.gameExist)
 				alert("Incorrect password");

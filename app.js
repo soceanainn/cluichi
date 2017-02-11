@@ -28,6 +28,18 @@ var PLAYER_LIST = [];
 var GAME_LIST = [];
 var PASSWORD_LIST = [];
 
+// Generate a list of public games every 5 seconds
+var publicGames;
+setInterval(function() {
+		publicGames = "List of Public Games: </div><div>";
+		for(var i in GAME_LIST){
+			if (PASSWORD_LIST[i]=== "")
+				if (publicGames.indexOf(GAME_LIST[i])==-1)
+					publicGames += GAME_LIST[i] + "</div><div>";
+		}
+}, 5000);
+
+
 io.sockets.on('connection', function(socket){
 	//If lobby is full
 	if (SOCKET_LIST.length >= numofPlayers){
@@ -58,11 +70,16 @@ io.sockets.on('connection', function(socket){
 		}		
 	});
 	
+	// Call for public games
+	socket.on('gameSelection', function (){
+		socket.emit('publicGames', publicGames);
+	});
+	
 	// Game Creation
 	socket.on('createGame',function(name, gamePassword){
 		if (findGame(name)!=-1){
 				socket.emit('createGameResponse',{success:false});		
-		} else { // If game name is free join game as first user
+		} else { // If game name is free join game as first users
 			joinGame(name, socket, gamePassword);
 			socket.emit('createGameResponse',{success:true});
 		}		
