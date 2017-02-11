@@ -1,3 +1,8 @@
+<!-- Lobby Full Screen -->
+<div id="lobbyFull" style ="display:none">
+	Error, game lobby is currently full. Please try again some other time.
+</div>
+
 <!-- Username Selection -->
 <div id="signDiv">
 	Please select a username: <input id="signDiv-username" type="text"></input><br>
@@ -45,6 +50,12 @@
 	document.oncontextmenu = function(event){
 		event.preventDefault();
 	}
+	
+	// If lobby is full
+	socket.on('lobbyFull', function(){
+		document.getElementById('lobbyFull').style.display = "inline-block";
+		document.getElementById('signDiv').style.display = "none";
+	});
 	
 	//----------------------------------------
 	// 			Set Width / Height
@@ -162,8 +173,12 @@
 		if(data.success){
 			gameSelect.style.display = 'none';
 			gameDiv.style.display = 'inline-block';
-		} else
-			alert("Game doesn't exist or invalid password");
+		} else {
+			if (data.gameExist)
+				alert("Incorrect password");
+			else
+				alert("Game doesn't exist");
+		}
 	});	
 	
 	//----------------------------------------

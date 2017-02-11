@@ -29,6 +29,14 @@ var GAME_LIST = [];
 var PASSWORD_LIST = [];
 
 io.sockets.on('connection', function(socket){
+	//If lobby is full
+	if (SOCKET_LIST.length >= numofPlayers){
+		socket.emit('lobbyFull');
+		console.log("Lobby full error");
+		socket.disconnect();
+		return;
+	}
+	
 	// Register Socket upon Connection
 	do {//Generate a random socket id for each new connection
 		socket.id = Math.floor(Math.random()*numofPlayers);
@@ -63,13 +71,13 @@ io.sockets.on('connection', function(socket){
 	// Joining a Game
 	socket.on('joinGame',function(name, gamePassword){
 		if (findGame(name)==-1){
-				socket.emit('joinGameResponse',{success:false});		
+				socket.emit('joinGameResponse',{success:false, gameExist:false});		
 		} else { // If game already has (a) player(s) join game as another user
 			if(PASSWORD_LIST[findGame(name)] === gamePassword){
 				joinGame(name, socket, gamePassword);
 				socket.emit('joinGameResponse',{success:true});
 			} else 
-				socket.emit('joinGameResponse',{success:false});
+				socket.emit('joinGameResponse',{success:false, gameExist:true});
 		}		
 	});
 	
