@@ -1,4 +1,12 @@
 //----------------------------------------------
+// 			CONSTANTS
+//---------------------------------------------- 
+
+var MAX_SERVER_PLAYERS = 100; // Number of players allowed on server at one time
+var MAX_GAME_PLAYERS = 2; // Number of players allowed in each game at a time
+
+
+//----------------------------------------------
 // 			Set Up Express
 //---------------------------------------------- 
 var express = require('express');
@@ -19,30 +27,26 @@ console.log("Server started.");
 
 var io = require('socket.io')(serv,{});
 
-// Constant for number of sockets (players) allowed at a time
-var numofPlayers = 100;
-
-// Keep track of sockets, players usernames, game names, and passwords in use
+// Keep track of sockets, players usernames and games in use
 var SOCKET_LIST = [];
 var PLAYER_LIST = [];
 var GAME_LIST = [];
-var PASSWORD_LIST = [];
 
 // Generate a list of public games every 5 seconds
 var publicGames;
 setInterval(function() {
 		publicGames = "List of Public Games: </div><div>";
 		for(var i in GAME_LIST){
-			if (PASSWORD_LIST[i]=== "")
-				if (publicGames.indexOf(GAME_LIST[i])==-1)
-					publicGames += GAME_LIST[i] + "</div><div>";
+			if (GAME_LIST[i].gamePassword === "")
+				if (publicGames.indexOf(GAME_LIST[i].name)==-1)
+					publicGames += GAME_LIST[i].name + "</div><div>";
 		}
 }, 5000);
 
 
 io.sockets.on('connection', function(socket){
 	//If lobby is full
-	if (SOCKET_LIST.length >= numofPlayers){
+	if (SOCKET_LIST.length >= MAX_SERVER_PLAYERS){
 		socket.emit('lobbyFull');
 		console.log("Lobby full error");
 		socket.disconnect();
@@ -51,7 +55,7 @@ io.sockets.on('connection', function(socket){
 	
 	// Register Socket upon Connection
 	do {//Generate a random socket id for each new connection
-		socket.id = Math.floor(Math.random()*numofPlayers);
+		socket.id = Math.floor(Math.random()*MAX_SERVER_PLAYERS);
 	} while (SOCKET_LIST[socket.id] != null)		
 	SOCKET_LIST[socket.id] = socket;
 	
@@ -80,19 +84,23 @@ io.sockets.on('connection', function(socket){
 		if (findGame(name)!=-1){
 				socket.emit('createGameResponse',{success:false});		
 		} else { // If game name is free join game as first users
-			joinGame(name, socket, gamePassword);
+			createGame(name, socket, gamePassword);
 			socket.emit('createGameResponse',{success:true});
 		}		
 	});
 	
 	// Joining a Game
 	socket.on('joinGame',function(name, gamePassword){
-		if (findGame(name)==-1){
+		var i = findGame(name);
+		if (i==-1){
 				socket.emit('joinGameResponse',{success:false, gameExist:false});		
 		} else { // If game already has (a) player(s) join game as another user
-			if(PASSWORD_LIST[findGame(name)] === gamePassword){
-				joinGame(name, socket, gamePassword);
-				socket.emit('joinGameResponse',{success:true});
+			if(GAME_LIST[i].gamePassword === gamePassword){
+				if(GAME_LIST[i].numPlayers < MAX_GAME_PLAYERS){
+					joinGame(name, socket, GAME_LIST[i].numPlayers, gamePassword);
+					socket.emit('joinGameResponse',{success:true});
+				} else
+					socket.emit('joinGameResponse', {success: false, gameFull:true});
 			} else 
 				socket.emit('joinGameResponse',{success:false, gameExist:true});
 		}		
@@ -109,7 +117,7 @@ io.sockets.on('connection', function(socket){
 	//	In-game Chat
 	socket.on('sendMsgToGame',function(data){ // When user sends a message
 		for(var i in SOCKET_LIST){
-			if (GAME_LIST[socket.id]==GAME_LIST[i]){
+			if (GAME_LIST[socket.id].name==GAME_LIST[i].name){
 				var str = PLAYER_LIST[socket.id] + ': ' + data;
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
@@ -149,6 +157,7 @@ disconnectUser = function (socket){
 	delete PLAYER_LIST[socket.id];
 	delete SOCKET_LIST[socket.id]; 
 	delete GAME_LIST[socket.id];
+	removePlayerFromGame(socket.id);
 }
 
 isUsernameTaken= function(name){
@@ -161,14 +170,28 @@ addUser = function(name, socket){
 }
 
 findGame = function(name){
-	return GAME_LIST.indexOf(name);
+	for (var i in GAME_LIST)
+		if (GAME_LIST[i].name == name)
+			return i;
+	return -1;	
 }
 
-joinGame = function(name, socket, gamePassword){
-	GAME_LIST[socket.id] = name;
-	PASSWORD_LIST[socket.id] = gamePassword;
+createGame = function(name, socket, gamePassword){
+	GAME_LIST[socket.id]= {name:name, gamePassword:gamePassword, numPlayers:1};
 }
 
+joinGame = function(name, socket, numPlayers, gamePassword){
+	GAME_LIST[socket.id]= {name:name, gamePassword:gamePassword, numPlayers:numPlayers};
+	for (var i in GAME_LIST)
+		if (GAME_LIST[i].name == GAME_LIST[socket.id].name)
+			GAME_LIST[i].numPlayers = numPlayers;	
+}
+
+removePlayerFromGame = function(id){
+	for (var i in GAME_LIST)
+		if (GAME_LIST[i].name == GAME_LIST[id].name)
+			GAME_LIST[i].numPlayers--;
+}
 //---------------------------------------------
 //				CONTROLS
 //---------------------------------------------
