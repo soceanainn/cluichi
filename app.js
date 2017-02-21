@@ -12,33 +12,29 @@ var UNIVERSAL_CHAT = true;				// Allow players to select universal chat
 var TRACK_CONTROLS = false;				// Capture key press events
 
 //----------------------------------------------
-// 			Set Up Express
+// 			Set Up Express and Server
 //---------------------------------------------- 
 var express = require('express');
 var app = express();
-var serv = require('http').Server(app);
 
-app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 8080);
-app.set('ip', process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1');
+// Settings for OpenShift or Local Machine
+var http = require('http').Server(app);
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+http.listen(server_port, server_ip_address);
 
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
+
 app.use('/client',express.static(__dirname + '/client'));
-
-http.createServer(app).listen(app.get('port'), app.get('ip'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
-
-serv.listen(process.env.OPENSHIFT_NODEJS_PORT || 2000);
-//serv.listen(process.env.PORT || 2000);
 console.log("Server started.");
 
 //-----------------------------------------------------
-// 				Set Up Socket.io and Players
+// 				Set Up Sockets, Players and Game
 //-----------------------------------------------------
 
-var io = require('socket.io')(serv,{});
+var io = require('socket.io').listen(http);
 
 // Keep track of sockets, players usernames and games in use
 var SOCKET_LIST = [];
