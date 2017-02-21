@@ -23,7 +23,8 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 
-serv.listen(process.env.PORT || 2000);
+serv.listen(process.env.OPENSHIFT_NODEJS_PORT || 2000);
+//serv.listen(process.env.PORT || 2000);
 console.log("Server started.");
 
 //-----------------------------------------------------
