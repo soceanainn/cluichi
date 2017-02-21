@@ -21,7 +21,7 @@
 <!-- Game Screen -->
 <div id="gameDiv" style="display:none;">
 	<!-- Game Canvas -->
-	<div id="game" style="position:absolute;">
+	<div id="game" style="position:absolute;" tabindex = "0">
 		<canvas id="ctx" style="position:absolute;border:1px solid #000000;"></canvas>
 	</div>
 	
@@ -117,7 +117,7 @@
 			signDiv.style.display = 'none';
 			gameSelect.style.display = 'inline-block';
 			showPublicGames();
-			setInterval(showPublicGames, 6000);
+			setInterval(showPublicGames, 1000);
 			//Automatically select text input area
 			document.getElementById('gameSelect-game').focus();
 			document.getElementById('gameSelect-game').select();
@@ -167,6 +167,12 @@
 		if(data.success){
 			gameSelect.style.display = 'none';
 			gameDiv.style.display = 'inline-block';
+			if (!data.chat)
+				document.getElementById('chat').style.display = 'none';
+			if(!data.universal)
+				document.getElementById('chats').style.display = 'none';
+			if(data.controls)
+				trackControls();
 			clearInterval(showPublicGames);
 		} else
 			alert("Game name taken");
@@ -185,6 +191,12 @@
 		if(data.success){
 			gameSelect.style.display = 'none';
 			gameDiv.style.display = 'inline-block';
+			if (!data.chat)
+				document.getElementById('chat').style.display = 'none';
+			if(!data.universal)
+				document.getElementById('chats').style.display = 'none';
+			if(data.controls)
+				trackControls();
 			clearInterval(showPublicGames);
 		} else {
 			if (data.gameExist)
@@ -234,46 +246,32 @@
 			chatInput.value = '';		
 		}
 	}
-		
-	/*
+	
 	//----------------------------------------
 	// 				Controls
 	// ---------------------------------------
-	document.onkeydown = function(event){
-		if(event.keyCode === 68)	//d is 68, right is 39
+	trackControls = function(){
+	var gameCanvas = document.getElementById('game');
+	gameCanvas.onkeydown = function(event){
+		if(event.keyCode === 68 || event.keyCode === 39)	//d is 68, right is 39
 			socket.emit('keyPress',{inputId:'right',state:true});
-		else if(event.keyCode === 83)	//s is 83, down is 40
+		else if(event.keyCode === 83 || event.keyCode === 40)	//s is 83, down is 40
 			socket.emit('keyPress',{inputId:'down',state:true});
-		else if(event.keyCode === 65) //a is 65, left is 37
+		else if(event.keyCode === 65 || event.keyCode === 37) //a is 65, left is 37
 			socket.emit('keyPress',{inputId:'left',state:true});
-		else if(event.keyCode === 87) // w is 87, up is 38
-			socket.emit('keyPress',{inputId:'up',state:true});
-			
+		else if(event.keyCode === 87 || event.keyCode === 38) // w is 87, up is 38
+			socket.emit('keyPress',{inputId:'up',state:true});		
 	}
-	document.onkeyup = function(event){
-		if(event.keyCode === 68)	//d is 68, right is 39
+	
+	gameCanvas.onkeyup = function(event){
+		if(event.keyCode === 68 || event.keyCode === 39)	//d is 68, right is 39
 			socket.emit('keyPress',{inputId:'right',state:false});
-		else if(event.keyCode === 83)	//s is 83, down is 40
+		else if(event.keyCode === 83 || event.keyCode === 40)	//s is 83, down is 40
 			socket.emit('keyPress',{inputId:'down',state:false});
-		else if(event.keyCode === 65) //a is 65, left is 37
+		else if(event.keyCode === 65 || event.keyCode === 37) //a is 65, left is 37
 			socket.emit('keyPress',{inputId:'left',state:false});
-		else if(event.keyCode === 87) // w is 87, up is 38
+		else if(event.keyCode === 87 || event.keyCode === 38) // w is 87, up is 38
 			socket.emit('keyPress',{inputId:'up',state:false});
 	}
-	
-	document.onmousedown = function(event){
-		socket.emit('mouseEvent',{inputId:'mouseClick',state:true});
 	}
-	
-	document.onmouseup = function(event){
-		socket.emit('mouseEvent',{inputId:'mouseClick',state:false});
-	}
-	
-	document.onmousemove = function(event){
-		var x = event.clientX;
-		var y = event.clientY;
-		var position = x:x, y:y;
-		socket.emit('mouseEvent', {inputId:'mousePosition',state: position});
-	}
-	*/
 </script>
