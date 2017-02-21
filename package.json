@@ -8,6 +8,7 @@
     "socket.io": "^1.7.2"
   },
   "devDependencies": {},
+  "main": "app.js"
   "scripts": {
     "start": "node app.js"
   },
