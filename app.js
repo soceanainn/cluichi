@@ -26,6 +26,10 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 
+http.createServer(app).listen(app.get('port'), app.get('ip'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
+
 serv.listen(process.env.OPENSHIFT_NODEJS_PORT || 2000);
 //serv.listen(process.env.PORT || 2000);
 console.log("Server started.");
