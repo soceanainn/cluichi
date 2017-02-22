@@ -16,12 +16,14 @@ var TRACK_CONTROLS = false;				// Capture key press events
 //---------------------------------------------- 
 var express = require('express');
 var app = express();
+var server = require('http').Server(app);
 
 // Settings for OpenShift or Local Machine
-var http = require('http').Server(app);
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-http.listen(server_port, server_ip_address);
+var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+server.listen(port, ip, function() {
+  console.log("Server running @ http://" + ip + ":" + port);
+});
 
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
@@ -34,7 +36,7 @@ console.log("Server started.");
 // 				Set Up Sockets, Players and Game
 //-----------------------------------------------------
 
-var io = require('socket.io').listen(http);
+var io = require('socket.io')(server);
 
 // Keep track of sockets, players usernames and games in use
 var SOCKET_LIST = [];
