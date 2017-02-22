@@ -19,8 +19,8 @@ var app = express();
 var server = require('http').Server(app);
 
 // Settings for OpenShift or Local Machine
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var port = process.env.OPENSHIFT_NODEJS_PORT //|| 8080;
+var ip = process.env.OPENSHIFT_NODEJS_IP //|| '127.0.0.1';
 server.listen(port, ip, function() {
   console.log("Server running @ http://" + ip + ":" + port);
 });
