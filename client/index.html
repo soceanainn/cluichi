@@ -105,6 +105,7 @@
 	
 	signDivSignIn.onclick = function(){
 		signDivUsername.value = signDivUsername.value.replace(/\s/g,'');
+		signDivUsername.value = filterText(signDivUsername.value);
 		if (signDivUsername.value.length > 2){
 			socket.emit('signIn',signDivUsername.value);
 		}
@@ -148,6 +149,8 @@
 	
 	gameSelectCreate.onclick = function(){
 		gameSelectGame.value = gameSelectGame.value.replace(/\s/g,'');
+		gameSelectGame.value = filterText(gameSelectGame.value);
+		gameSelectPassword.value = filterText(gameSelectPassword.value);
 		if (gameSelectGame.value.length > 3){
 			socket.emit('createGame',gameSelectGame.value, gameSelectPassword.value);
 		}
@@ -238,6 +241,7 @@
 		
 	chatForm.onsubmit = function(e){
 		e.preventDefault();
+		chatInput.value = filterText(chatInput.value);
 		if (chatInput.value.length > 0){
 			if (chats.value==="universal")
 				socket.emit('sendMsgToServer',chatInput.value);
@@ -251,27 +255,39 @@
 	// 				Controls
 	// ---------------------------------------
 	trackControls = function(){
-	var gameCanvas = document.getElementById('game');
-	gameCanvas.onkeydown = function(event){
-		if(event.keyCode === 68 || event.keyCode === 39)	//d is 68, right is 39
-			socket.emit('keyPress',{inputId:'right',state:true});
-		else if(event.keyCode === 83 || event.keyCode === 40)	//s is 83, down is 40
-			socket.emit('keyPress',{inputId:'down',state:true});
-		else if(event.keyCode === 65 || event.keyCode === 37) //a is 65, left is 37
-			socket.emit('keyPress',{inputId:'left',state:true});
-		else if(event.keyCode === 87 || event.keyCode === 38) // w is 87, up is 38
-			socket.emit('keyPress',{inputId:'up',state:true});		
+		var gameCanvas = document.getElementById('game');
+		gameCanvas.onkeydown = function(event){
+			if(event.keyCode === 68 || event.keyCode === 39)	//d is 68, right is 39
+				socket.emit('keyPress',{inputId:'right',state:true});
+			else if(event.keyCode === 83 || event.keyCode === 40)	//s is 83, down is 40
+				socket.emit('keyPress',{inputId:'down',state:true});
+			else if(event.keyCode === 65 || event.keyCode === 37) //a is 65, left is 37
+				socket.emit('keyPress',{inputId:'left',state:true});
+			else if(event.keyCode === 87 || event.keyCode === 38) // w is 87, up is 38
+				socket.emit('keyPress',{inputId:'up',state:true});		
+		}
+		
+		gameCanvas.onkeyup = function(event){
+			if(event.keyCode === 68 || event.keyCode === 39)	//d is 68, right is 39
+				socket.emit('keyPress',{inputId:'right',state:false});
+			else if(event.keyCode === 83 || event.keyCode === 40)	//s is 83, down is 40
+				socket.emit('keyPress',{inputId:'down',state:false});
+			else if(event.keyCode === 65 || event.keyCode === 37) //a is 65, left is 37
+				socket.emit('keyPress',{inputId:'left',state:false});
+			else if(event.keyCode === 87 || event.keyCode === 38) // w is 87, up is 38
+				socket.emit('keyPress',{inputId:'up',state:false});
+		}
 	}
 	
-	gameCanvas.onkeyup = function(event){
-		if(event.keyCode === 68 || event.keyCode === 39)	//d is 68, right is 39
-			socket.emit('keyPress',{inputId:'right',state:false});
-		else if(event.keyCode === 83 || event.keyCode === 40)	//s is 83, down is 40
-			socket.emit('keyPress',{inputId:'down',state:false});
-		else if(event.keyCode === 65 || event.keyCode === 37) //a is 65, left is 37
-			socket.emit('keyPress',{inputId:'left',state:false});
-		else if(event.keyCode === 87 || event.keyCode === 38) // w is 87, up is 38
-			socket.emit('keyPress',{inputId:'up',state:false});
-	}
+	//----------------------------------------
+	//			Code Injection Security
+	// ---------------------------------------
+	
+	filterText = function(text){
+		// Remove everything except accepted characters
+		text = text.replace(/[^ a-zA-Z0-9.,!?:;()áéíóú]/g, "");
+		// Remove multiple spaces
+		text = text.replace(/[ ]+/g, " ");
+		return text;
 	}
 </script>
