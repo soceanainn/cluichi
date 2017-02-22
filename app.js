@@ -18,13 +18,6 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 
-var server_port = process.env.PORT || 8080
-var server_ip_address = process.env.IP || '127.0.0.1'
-
-server.listen(server_port, server_ip_address, function(){
-  console.log("Listening on " + server_ip_address + ", server_port " + server_port)
-});
-
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
