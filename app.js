@@ -9,7 +9,8 @@ var MIN_GAME_PLAYERS = 2; 				// Number of players needed to play
 var CHAT = true;						// Display chat underneath game
 var UNIVERSAL_CHAT = true;				// Allow players to select universal chat
 
-var TRACK_CONTROLS = false;				// Capture key press events
+var TRACK_CONTROLS = true;				// Capture key press events
+var INCLUDE_WASD = true;				// Allow WASD to be used as arrow keys
 
 //----------------------------------------------
 // 			Set Up Express and Server
@@ -92,7 +93,7 @@ io.sockets.on('connection', function(socket){
 				socket.emit('createGameResponse',{success:false});		
 		} else { // If game name is free join game as first users
 			createGame(name, socket, gamePassword);
-			socket.emit('createGameResponse',{success:true, chat:CHAT, universal:UNIVERSAL_CHAT, controls:TRACK_CONTROLS});
+			socket.emit('createGameResponse',{success:true, chat:CHAT, universal:UNIVERSAL_CHAT, controls:TRACK_CONTROLS, wasd:INCLUDE_WASD});
 		}		
 	});
 	
@@ -105,7 +106,7 @@ io.sockets.on('connection', function(socket){
 			if(GAME_LIST[i].gamePassword === gamePassword){
 				if(GAME_LIST[i].numPlayers < MAX_GAME_PLAYERS){
 					joinGame(name, socket, (GAME_LIST[i].numPlayers) + 1, gamePassword);
-					socket.emit('joinGameResponse',{success:true, chat:CHAT, universal:UNIVERSAL_CHAT, controls:TRACK_CONTROLS});
+					socket.emit('joinGameResponse',{success:true, chat:CHAT, universal:UNIVERSAL_CHAT, controls:TRACK_CONTROLS, wasd:INCLUDE_WASD});
 				} else
 					socket.emit('joinGameResponse', {success: false, gameFull:true});
 			} else 
