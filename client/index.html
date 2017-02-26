@@ -34,7 +34,7 @@
 		</select></div><hr />
 		<div id="chat-text" style="overflow-y:scroll; display:none"></div>
 		<div id="chat-group" style="overflow-y:scroll"></div>
-		<form id="chat-form">
+		<form id="chat-form" autocomplete="off">
 			<input id="chat-input" type="text"></input>
 		</form>
 	</div>
@@ -223,10 +223,12 @@
 	
 	socket.on('addToChat',function(data){
 		chatText.innerHTML += '<div>' + data + '</div>';
+		chatText.scrollTop = chatText.scrollHeight;
 	});
 	
 	socket.on('addToGame', function(data){
 		groupChat.innerHTML += '<div>' + data + '</div>';
+		groupChat.scrollTop = groupChat.scrollHeight;
 	});
 	
 	displayChat = function(){
