@@ -167,12 +167,14 @@ io.sockets.on('connection', function(socket){
 	
 	// When a user plays a card
 	socket.on('playedCard', function(data){
+		var output = {playerId : socket.id, str : data};
+		SOCKET_LIST[PLAYER_LIST[socket.id].host].emit(output);
 		for(var i in PLAYER_LIST){
 			if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-				var str = PLAYER_LIST[socket.id].name + ' played the card: ' + data;
+				var str = PLAYER_LIST[socket.id].name + ' has played a card';
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
-		}		
+		}
 	});
 	
 	// When a user needs to draw an answer card
@@ -196,11 +198,27 @@ io.sockets.on('connection', function(socket){
 				SOCKET_LIST[i].emit('updateScores', str);
 	}
 	
+	socket.on('newTurn', function(){
+		updateScores(socket.id);
+		for (var i in PLAYER_LIST)
+			if (PLAYER_LIST[i].host = socket.id)
+				SOCKET_LIST[i].emit('newTurn');
+	});
+	
+	socket.on('cardCzar', function(data){
+		for (var i in PLAYER_LIST)
+			if (PLAYER_LIST[i].host = socket.id){
+				SOCKET_LIST[i].emit('newQuestion', data.str);
+				SOCKET_LIST[i].emit('addToGame', PLAYER_LIST[data.socket].name + " is the card czar");
+			}
+		SOCKET_LIST[data.socket].emit('cardCzar');	
+	});
+	
 	// Start Game (host)
 	socket.on('startGame', function(){
 		if (GAME_LIST[socket.id].numPlayers >= MIN_GAME_PLAYERS){
 			startGame(socket.id);
-			updateScores(socket.id)
+			updateScores(socket.id);
 		}else
 			socket.emit('minPlayersNotMet', {numPlayers: GAME_LIST[socket.id].numPlayers, playersNeeded: MIN_GAME_PLAYERS});
 	});
@@ -290,8 +308,10 @@ joinGame = function(socket, host){
 startGame = function(host){
 	GAME_LIST[host].started = true;
 	for (var i in PLAYER_LIST)
-		if (PLAYER_LIST[i].host == host)
+		if (PLAYER_LIST[i].host == host){
+			SOCKET_LIST[i].emit('addPlayer', i);
 			SOCKET_LIST[i].emit('startGame');
+		}
 }
 
 //---------------------------------------------

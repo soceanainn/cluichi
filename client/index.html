@@ -102,9 +102,22 @@
 			drawAnswer(i);
 		}
 		
+		// "You are the Card Czar"
+		var div = document.createElement('div');
+		div.className = "col-sm-12 col-md-12 col-lg-12";
+		div.innerHTML = "<h2> You are the Card Czar <h2>"
+		div.style.display = "none";
+		div.id = "cardCzar";
+		canvas.appendChild(div);
+		
+		// Played Cards
+		div = document.createElement('div');
+		div.id = "playedCards";
+		document.getElementById("cardCzar").appendChild(div);
+		
 		
 		// Create div that sticks to bottom of canvas
-		var div = document.createElement('div');
+		div = document.createElement('div');
 		div.id = "bottom";
 		div.style.position = "absolute";
 		div.style.bottom = 0;
@@ -160,10 +173,33 @@
 
 	// Play a card
 	function playCard(){	
+		if (cardId == null) return;
 		var string = document.getElementById(cardId).innerHTML;
 		socket.emit('playedCard', string);
 		drawAnswer(cardId);
+		for (var i = 1; i <= 8; i++){ // Disable all cards
+			document.getElementById(i).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default disabled";
+		}
 	}
+	
+	// New turn
+	socket.on('newTurn', function(){
+		for (var i = 1; i <= 8; i++){ //Reenable all cards
+			document.getElementById(i).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
+		}
+	});
+	
+	socket.on('newQuestion', function(data){
+		// Update question for everybody
+		document.getElementById("question").innerHTML= "<h4>" + data + "</h4>";
+	});
+	
+	// New card Czar
+	socket.on('cardCzar', function(){
+		for (var i = 1; i <= 8; i++)
+			document.getElementById(i).style.display = "none";
+		document.getElementById("cardCzar").style.display = "inline-block"
+	});
 	
 	// Request a new card for id
 	function drawAnswer(id){
@@ -175,6 +211,7 @@
 	socket.on('answerCard', function(data){
 		document.getElementById(data.cardId).innerHTML = data.str;
 	});
+	
 	
 	// When server updates scoreboard
 	socket.on('updateScores', function(data){
@@ -221,8 +258,8 @@
 		});
 		
 		// When a user plays a card
-		socket.on('played', function(playerId){
-			played(playerId);
+		socket.on('played', function(data){
+			played(data.playerId, data.str);
 			if(players.allPlayed()){
 				players.reset;	
 				newTurn();
@@ -240,10 +277,10 @@
 			// Otherwise go back to start of list
 			else 
 				currplayer = players.head;		
-				
 			var temp = questions[questionCount++];
 			var data = {socket: currplayer.playerId, str: temp};
 			socket.emit('cardCzar', data);
+			socket.emit('newTurn');
 		}
 		
 		// Add "start" button for game
@@ -256,10 +293,11 @@
 		
 		socket.on('startGame', function(){
 			document.getElementById("startButton").style.display = "none";
+			newTurn();
 		});
 		
 		socket.on('addPlayer', function(socket){
-			players.add(socket.id);
+			players.add(socket);
 		});
 		
 		socket.on('minPlayersNotMet', function (data){
@@ -275,6 +313,7 @@
 		{
 			this.playerId = playerId;
 			this.played = false;
+			this.answer = "";
 			this.next = null;
 		}
 			
@@ -306,12 +345,13 @@
 			this._length++;
 			return node;
 		}
-		List.prototype.played = function (playerId)
+		List.prototype.played = function (data)
 		{
 			currentNode = this.head;
 			while (currentNode.next){
-				if (currentNode.playerId == playerId){
+				if (currentNode.playerId == data.playerId){
 					currentNode.played = true;
+					currentNode.answer = data.str;
 					return;
 				}	
 			}
