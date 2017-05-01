@@ -63,10 +63,10 @@
 		document.getElementById('signDiv').style.display = "none";
 	});
 	
-	// If player disconnects during game, end game
+	// When game ends display str
 	socket.on('endOfGame', function(str){
 		var endGame = document.getElementById('endGame');
-		endGame.innerHTML = "<h1>" + str + " has left, and so the game has ended...</h1>";
+		endGame.innerHTML = "<h1>" + str + "</h1>";
 		endGame.style.display = "inline-block";
 		document.getElementById('gameDiv').style.display = "none";
 		socket.disconnect();
@@ -207,10 +207,11 @@
 		document.getElementById(data.cardId).innerHTML = data.str;
 	});
 	
-		var first = true
+	var first = true;
+	var strings = "";
 	// Judging time
 	socket.on('judge', function (data){
-		var strings = data.split(/<>/);
+		strings = data.split(/<>/).filter(Boolean);
 		if (first){
 			first = false;
 			for (var j = 0; strings[j*2]!=null; j++){
@@ -219,18 +220,19 @@
 				document.getElementById("cardCzar").appendChild(div);
 				div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
 				div.innerHTML = strings[j*2];
-				div.setAttribute("onclick", "czarSelected(parseInt(strings[j*2+1])");
+				div.setAttribute("onclick", "czarSelected(this.id)");
 			}
 		} else {
 			for (var j = 0; strings[j*2]!=null; j++){
 				document.getElementById(parseInt(j + 20)).innerHTML = strings[j*2];
-				document.getElementById(parseInt(j + 20)).setAttribute("onclick", "czarSelected({ str : strings[j*2] , winner: parseInt(strings[j*2+1])");				
+				document.getElementById(parseInt(j + 20)).setAttribute("onclick", "czarSelected(this.id)");				
 			}
 		}
 	});
 	
-	function czarSelected (data){
-		socket.emit('czarSelected', data);
+	function czarSelected(data){
+		var j = parseInt(data) - 20;
+		socket.emit('czarSelected', { str : strings[j*2] , winner: parseInt(strings[j*2+1])});
 	}
 	
 	
@@ -241,7 +243,7 @@
 			temp.innerHTML = data;
 		// Set Height of Scoreboard and Question Card
 		var setHeight = (document.getElementById("scores").offsetHeight > document.getElementById("question").offsetHeight ?
-		document.getElementById("scores").offsetHeight : document.getElementById("question").offsetHeight);
+					document.getElementById("scores").offsetHeight : document.getElementById("question").offsetHeight);
 		document.getElementById("question").style.height = setHeight;
 		document.getElementById("scores").style.height = setHeight;	
 	});
@@ -332,10 +334,9 @@
 			alert("Error not enough players. You have: " + data.numPlayers + ". You need: " + data.playersNeeded + "!");
 		});
 		
-		//###########################################
-		//#		Linked List Functions				#
-		//###########################################
-		// Adapted from code online https://code.tutsplus.com/articles/data-structures-with-javascript-singly-linked-list-and-doubly-linked-list--cms-23392
+	//----------------------------------------
+	// 				Linked List
+	// ---------------------------------------
 
 		function Node(playerId)
 		{

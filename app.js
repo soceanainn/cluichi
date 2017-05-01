@@ -4,7 +4,7 @@
 
 var MAX_SERVER_PLAYERS = 100; 			// Number of players allowed on server at one time
 var MAX_GAME_PLAYERS = 8; 				// Number of players allowed in each game at a time
-var MIN_GAME_PLAYERS = 1; 				// Number of players needed to start the game
+var MIN_GAME_PLAYERS = 3; 				// Number of players needed to start the game
 
 var CHAT = true;						// Display chat underneath game
 var UNIVERSAL_CHAT = true;				// Allow players to select universal chat
@@ -189,13 +189,21 @@ io.sockets.on('connection', function(socket){
 	// Update the scoreboard
 	function updateScores(id){
 		var str = '<h3 style = "text-align: center">Scoreboard</h3>';
+		var winner = null;
 		for (var i in PLAYER_LIST)
-			if (PLAYER_LIST[id].host == PLAYER_LIST[i].host)
+			if (PLAYER_LIST[id].host == PLAYER_LIST[i].host){
 				str += (PLAYER_LIST[i].name + "'s score is: " + PLAYER_LIST[i].score + "<br>");
+				if (PLAYER_LIST[i].score == 10)
+					winner = "The game is now over. " + PLAYER_LIST[i].name + " has won!";
+			}
 			
 		for (var i in PLAYER_LIST)
-			if (PLAYER_LIST[id].host == PLAYER_LIST[i].host)
-				SOCKET_LIST[i].emit('updateScores', str);
+			if (PLAYER_LIST[id].host == PLAYER_LIST[i].host){
+				if (winner != null)
+					SOCKET_LIST[i].emit('endOfGame', winner);
+				else 
+					SOCKET_LIST[i].emit('updateScores', str);
+			}	
 	}
 	
 	// New Turn
@@ -211,7 +219,7 @@ io.sockets.on('connection', function(socket){
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id){
 				SOCKET_LIST[i].emit('newQuestion', data.str);
-				SOCKET_LIST[i].emit('addToGame', PLAYER_LIST[data.socket].name + " is the card czar");
+				SOCKET_LIST[i].emit('addToGame', PLAYER_LIST[data.socket].name + " is the c czar");
 			}
 		SOCKET_LIST[data.socket].emit('cardCzar');	
 	});
@@ -231,11 +239,10 @@ io.sockets.on('connection', function(socket){
 	socket.on('czarSelected', function (data){
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id)
-				for (var j = 0; strings[j*2]!=null; j++)
-					SOCKET_LIST[i].emit('addToGame', "The winner was " + PLAYER_LIST[data.winner].name + " with : " + data.str);
-				PLAYER_LIST[data.winner].score++;
-				updateScores;
-				PLAYER_LIST[data.winner].host.emit('judged');
+				SOCKET_LIST[i].emit('addToGame', "The winner was " + PLAYER_LIST[data.winner].name + " with : " + data.str);
+		PLAYER_LIST[data.winner].score++;
+		updateScores(data.winner);
+		SOCKET_LIST[PLAYER_LIST[data.winner].host].emit('judged');
 	});
 	
 	// Start Game (host)
@@ -269,7 +276,7 @@ function disconnectUser(socket){
 			if (GAME_LIST[PLAYER_LIST[socket.id].host].started){
 				for(var i in PLAYER_LIST){ // End game that player has disconnected from
 					if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-						var str = PLAYER_LIST[socket.id].name;
+						var str = PLAYER_LIST[socket.id].name + " has disconnected, the game is now over";
 						SOCKET_LIST[i].emit('endOfGame',str);
 					}
 				}
