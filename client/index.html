@@ -118,14 +118,27 @@
 		document.getElementById("bottom").appendChild(div);
 		div.setAttribute("onclick", "playCard()");
 		
-		//Create a div for scoreboard
+		//Create a div for question (black card)
 		div = document.createElement('div');
-		div.id = "scores";
-		div.className = "col-sm-12 col-md-12 col-lg-12";
+		div.id = "question";
+		div.className = "col-sm-6 col-md-6 col-lg-6";
 		div.style.borderRadius = "25px";
 		div.style.border = "2px solid #fff";
 		div.style.paddingLeft = "5%";
 		div.style.backgroundColor = "#333";
+		div.style.float = "right"
+		div.style.color = "#fff";
+		document.getElementById("bottom").appendChild(div);
+		
+		//Create a div for scoreboard
+		div = document.createElement('div');
+		div.id = "scores";
+		div.className = "col-sm-6 col-md-6 col-lg-6";
+		div.style.borderRadius = "25px";
+		div.style.border = "2px solid #fff";
+		div.style.paddingLeft = "5%";
+		div.style.backgroundColor = "#333";
+		div.style.float = "left"
 		div.style.color = "#fff";
 		document.getElementById("bottom").appendChild(div);
 	})
@@ -165,9 +178,14 @@
 	
 	// When server updates scoreboard
 	socket.on('updateScores', function(data){
-	var temp = document.getElementById('scores');
-	if (temp != null)
-		temp.innerHTML = data;
+		var temp = document.getElementById('scores');
+		if (temp != null)
+			temp.innerHTML = data;
+		// Set Height of Scoreboard and Question Card
+		var setHeight = (document.getElementById("scores").offsetHeight > document.getElementById("question").offsetHeight ?
+		document.getElementById("scores").offsetHeight : document.getElementById("question").offsetHeight);
+		document.getElementById("question").style.height = setHeight;
+		document.getElementById("scores").style.height = setHeight;	
 	});
 	
 	// When hosting
