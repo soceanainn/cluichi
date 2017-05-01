@@ -82,12 +82,7 @@
 	
 	//Initialize cardId (selected card) as null
 	var cardId = null;
-
-	// Add 8 card divs to the canvas
-	for ( var i = 1; i <= 8 ; i++){
-		
-	}
-
+	
 	//When game starts
 	socket.on('startGame',function(){
 		// Create and draw 8 cards
@@ -105,7 +100,7 @@
 		// "You are the Card Czar"
 		var div = document.createElement('div');
 		div.className = "col-sm-12 col-md-12 col-lg-12";
-		div.innerHTML = "<h2> You are the Card Czar <h2>"
+		div.innerHTML = "<h2> You are the Card Czar <h2>";
 		div.style.display = "none";
 		div.id = "cardCzar";
 		canvas.appendChild(div);
@@ -126,7 +121,7 @@
 		
 		// Create a "confirm selection" button
 		div = document.createElement('div');
-		div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default"
+		div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
 		div.innerHTML = "Confirm selection";
 		document.getElementById("bottom").appendChild(div);
 		div.setAttribute("onclick", "playCard()");
@@ -154,17 +149,16 @@
 		div.style.float = "left"
 		div.style.color = "#fff";
 		document.getElementById("bottom").appendChild(div);
-	})
 
 	// Select a card
-	function selected(id){
+	selected = function(id){
 		clear(cardId);
 		document.getElementById(id).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default active";
 		cardId = id;
 	}	
 
 	// Deselect a card
-	function clear(id){
+	clear = function(id){
 		if (cardId!=null){
 			document.getElementById(id).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
 			cardId = null;
@@ -172,7 +166,7 @@
 	}
 
 	// Play a card
-	function playCard(){	
+	playCard = function(){	
 		if (cardId == null) return;
 		var string = document.getElementById(cardId).innerHTML;
 		socket.emit('playedCard', string);
@@ -201,7 +195,33 @@
 		document.getElementById("cardCzar").style.display = "inline-block"
 	});
 	
-	// Request a new card for id
+	var first = true
+	// Judging time
+	socket.on('judge', function (data){
+		var strings = data.split(/<>/);
+		if (first){
+			first = false;
+			for (var j = 0; strings[j*2]!=null; j++){
+				var div = document.createElement('div');
+				div.id = parseInt(j + 20);
+				document.getElementById("cardCzar").appendChild(div);
+				div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
+				div.innerHTML = strings[j*2];
+				div.setAttribute("onclick", "czarSelected(parseInt(strings[j*2+1])");
+			}
+		} else {
+			for (var j = 0; strings[j*2]!=null; j++){
+				document.getElementById(parseInt(j + 20)).innerHTML = strings[j*2];
+				document.getElementById(parseInt(j + 20)).setAttribute("onclick", "czarSelected({ str : strings[j*2] , winner: parseInt(strings[j*2+1])");				
+			}
+		}
+	});
+	
+	function czarSelected (data){
+		socket.emit('czarSelected', data);
+	}
+	
+	// Request a new card
 	function drawAnswer(id){
 		socket.emit('drawAnswer', id);
 		clear(cardId);
@@ -225,6 +245,8 @@
 		document.getElementById("scores").style.height = setHeight;	
 	});
 	
+	});
+
 	// When hosting
 	socket.on('hosting', function(){
 		var players = new List();
@@ -259,11 +281,15 @@
 		
 		// When a user plays a card
 		socket.on('played', function(data){
-			played(data.playerId, data.str);
+			players.cardPlayed(data);
 			if(players.allPlayed()){
-				players.reset;	
-				newTurn();
+				players.reset;
+				socket.emit('judge', {str: players.getAnswers(), socket: players.cardCzar});
 			}
+		});
+		
+		socket.on('judged', function(){
+			newTurn();
 		});
 		
 		// New turn
@@ -279,6 +305,7 @@
 				currplayer = players.head;		
 			var temp = questions[questionCount++];
 			var data = {socket: currplayer.playerId, str: temp};
+			players.cardCzar = currplayer.playerId;
 			socket.emit('cardCzar', data);
 			socket.emit('newTurn');
 		}
@@ -303,11 +330,10 @@
 		socket.on('minPlayersNotMet', function (data){
 			alert("Error not enough players. You have: " + data.numPlayers + ". You need: " + data.playersNeeded + "!");
 		});
-		
-		//###########################################
-		//#		Linked List Functions				#
-		//###########################################
-		// Adapted from code online https://code.tutsplus.com/articles/data-structures-with-javascript-singly-linked-list-and-doubly-linked-list--cms-23392
+			
+	//----------------------------------------
+	// 			Linked List Implementation
+	// ---------------------------------------
 
 		function Node(playerId)
 		{
@@ -321,6 +347,7 @@
 		{
 			this._length = 0;
 			this.head = null;
+			this.cardCzar = null;
 		}
 			
 		List.prototype.add = function (playerId)
@@ -345,37 +372,52 @@
 			this._length++;
 			return node;
 		}
-		List.prototype.played = function (data)
+		List.prototype.cardPlayed = function (data)
 		{
+			alert(data.playerId + data.str);
 			currentNode = this.head;
-			while (currentNode.next){
+			while (currentNode){
 				if (currentNode.playerId == data.playerId){
 					currentNode.played = true;
 					currentNode.answer = data.str;
 					return;
 				}	
+				currentNode = currentNode.next;
 			}
 		}
 		List.prototype.reset = function()
 		{
 			currentNode = this.head;
-			while (currentNode.next){
+			while (currentNode){
 				currentNode.played = false;
+				currentNode = currentNode.next
 			}
 		}
 		
 		List.prototype.allPlayed = function()
 		{
 			currentNode = this.head;
-			while (currentNode.next){
-				if (currentNode.played == false)
-					return false;
+			while (currentNode) {
+				if (currentNode.playerId != this.cardCzar)
+					if (currentNode.played == false)
+						return false;
+				currentNode = currentNode.next;	
 			}
 			return true;
 		}
+		
+		List.prototype.getAnswers = function()
+		{
+			currentNode = this.head;
+			var string = "";
+			while (currentNode){
+				if (currentNode.playerId != this.cardCzar)
+					string += currentNode.answer + "<>" + currentNode.playerId + "<>";
+				currentNode = currentNode.next	
+			}
+			return string
+		}
 	});
-	
-	
 	
 	//----------------------------------------
 	// 			Set Width / Height
