@@ -168,7 +168,7 @@ io.sockets.on('connection', function(socket){
 	// When a user plays a card
 	socket.on('playedCard', function(data){
 		var output = {playerId : socket.id, str : data};
-		SOCKET_LIST[PLAYER_LIST[socket.id].host].emit('played', output);
+		SOCKET_LIST[PLAYER_LIST[socket.id].host].emit(output);
 		for(var i in PLAYER_LIST){
 			if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
 				var str = PLAYER_LIST[socket.id].name + ' has played a card';
@@ -198,7 +198,6 @@ io.sockets.on('connection', function(socket){
 				SOCKET_LIST[i].emit('updateScores', str);
 	}
 	
-	// New Turn
 	socket.on('newTurn', function(){
 		updateScores(socket.id);
 		for (var i in PLAYER_LIST)
@@ -206,7 +205,6 @@ io.sockets.on('connection', function(socket){
 				SOCKET_LIST[i].emit('newTurn');
 	});
 	
-	// New Card Czar
 	socket.on('cardCzar', function(data){
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id){
@@ -214,28 +212,6 @@ io.sockets.on('connection', function(socket){
 				SOCKET_LIST[i].emit('addToGame', PLAYER_LIST[data.socket].name + " is the card czar");
 			}
 		SOCKET_LIST[data.socket].emit('cardCzar');	
-	});
-	
-	// Card Czar Must Judge
-	socket.on('judge', function(data){
-		// Display answers
-		var strings = data.str.split(/<>/);
-		for (var i in PLAYER_LIST)
-			if (PLAYER_LIST[i].host = socket.id)
-				for (var j = 0; strings[j*2]!=null; j++)
-					SOCKET_LIST[i].emit('addToGame', "Answer # " + j + " is: " + strings[j*2]);
-		// Send data to card czar for judging
-		SOCKET_LIST[data.socket].emit('judge', data.str);
-	});
-	
-	socket.on('czarSelected', function (data){
-		for (var i in PLAYER_LIST)
-			if (PLAYER_LIST[i].host = socket.id)
-				for (var j = 0; strings[j*2]!=null; j++)
-					SOCKET_LIST[i].emit('addToGame', "The winner was " + PLAYER_LIST[data.winner].name + " with : " + data.str);
-				PLAYER_LIST[data.winner].score++;
-				updateScores;
-				PLAYER_LIST[data.winner].host.emit('judged');
 	});
 	
 	// Start Game (host)
@@ -333,7 +309,7 @@ startGame = function(host){
 	GAME_LIST[host].started = true;
 	for (var i in PLAYER_LIST)
 		if (PLAYER_LIST[i].host == host){
-			SOCKET_LIST[host].emit('addPlayer', i);
+			SOCKET_LIST[i].emit('addPlayer', i);
 			SOCKET_LIST[i].emit('startGame');
 		}
 }
