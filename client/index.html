@@ -102,11 +102,31 @@
 			drawAnswer(i);
 		}
 		
-		//Create a div for scoreboard
+		
+		// Create div that sticks to bottom of canvas
 		var div = document.createElement('div');
-		div.id = "scores";
-		div.style.borderRadius = "25px";
-		div.style.border = "2px solid #73AD21";
+		div.id = "bottom";
+		div.style.position = "absolute";
+		div.style.bottom = 0;
+		div.style.width = "100%";
+		canvas.appendChild(div);
+		
+			//Create a div for scoreboard
+			div = document.createElement('div');
+			div.id = "scores";
+			div.style.borderRadius = "25px";
+			div.style.border = "2px solid #fff";
+			div.style.paddingLeft = "5%";
+			div.style.backgroundColor = "#333";
+			div.style.color = "#fff";
+			document.getElementById("bottom").appendChild(div);
+			
+			// Create a "confirm selection" button
+			div = document.createElement('div');
+			div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default"
+			div.innerHTML = "Confirm selection";
+			document.getElementById("bottom").appendChild(div);
+			div.setAttribute("onclick", "playCard()");
 	})
 
 	// Select a card
