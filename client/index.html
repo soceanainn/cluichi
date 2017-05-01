@@ -174,6 +174,7 @@
 		drawAnswer(cardId);
 		for (var i = 1; i <= 8; i++){ // Disable all cards
 			document.getElementById(i).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default disabled";
+			document.getElementById(i).setAttribute("onclick", "");
 		}
 	}
 	
@@ -181,6 +182,7 @@
 	socket.on('newTurn', function(){
 		for (var i = 1; i <= 8; i++){ //Reenable all cards
 			document.getElementById(i).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
+			document.getElementById(i).setAttribute("onclick", "selected(this.id)");
 		}
 	});
 	
