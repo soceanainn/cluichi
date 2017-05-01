@@ -219,7 +219,7 @@ io.sockets.on('connection', function(socket){
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id){
 				SOCKET_LIST[i].emit('newQuestion', data.str);
-				SOCKET_LIST[i].emit('addToGame', PLAYER_LIST[data.socket].name + " is the c czar");
+				SOCKET_LIST[i].emit('addToGame', PLAYER_LIST[data.socket].name + " is the card czar");
 			}
 		SOCKET_LIST[data.socket].emit('cardCzar');	
 	});
@@ -238,11 +238,12 @@ io.sockets.on('connection', function(socket){
 	
 	socket.on('czarSelected', function (data){
 		for (var i in PLAYER_LIST)
-			if (PLAYER_LIST[i].host = socket.id)
+			if (PLAYER_LIST[i].host == socket.id)
 				SOCKET_LIST[i].emit('addToGame', "The winner was " + PLAYER_LIST[data.winner].name + " with : " + data.str);
 		PLAYER_LIST[data.winner].score++;
 		updateScores(data.winner);
 		SOCKET_LIST[PLAYER_LIST[data.winner].host].emit('judged');
+		console.log('judged ' + PLAYER_LIST[PLAYER_LIST[data.winner].host].name);
 	});
 	
 	// Start Game (host)
