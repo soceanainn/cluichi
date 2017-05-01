@@ -186,22 +186,21 @@ io.sockets.on('connection', function(socket){
 	
 	// Update the scoreboard
 	function updateScores(id){
-		var str = "";
-		for (var i in PLAYER_LIST){
-			if (PLAYER_LIST[id].host === PLAYER_LIST[i].host){
-				str += (PLAYER_LIST[id].name + "'s score is: " + PLAYER_LIST[i].score + "<br>");
-			}
-		}
-		socket.emit('updateScores', str);
+		var str = '<h3 style = "text-align: center">Scoreboard</h3>';
+		for (var i in PLAYER_LIST)
+			if (PLAYER_LIST[id].host == PLAYER_LIST[i].host)
+				str += (PLAYER_LIST[i].name + "'s score is: " + PLAYER_LIST[i].score + "<br>");
+			
+		for (var i in PLAYER_LIST)
+			if (PLAYER_LIST[id].host == PLAYER_LIST[i].host)
+				SOCKET_LIST[i].emit('updateScores', str);
 	}
 	
 	// Start Game (host)
 	socket.on('startGame', function(){
 		if (GAME_LIST[socket.id].numPlayers >= MIN_GAME_PLAYERS){
 			startGame(socket.id);
-		setTimeout(function(){
 			updateScores(socket.id)
-		}, 3000);
 		}else
 			socket.emit('minPlayersNotMet', {numPlayers: GAME_LIST[socket.id].numPlayers, playersNeeded: MIN_GAME_PLAYERS});
 	});
