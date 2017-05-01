@@ -227,7 +227,8 @@
 		} else {
 			for (var j = 0; strings[j*2]!=null; j++){
 				document.getElementById(parseInt(j + 20)).innerHTML = strings[j*2];
-				document.getElementById(parseInt(j + 20)).setAttribute("onclick", "czarSelected(this.id)");				
+				document.getElementById(parseInt(j + 20)).setAttribute("onclick", "czarSelected(this.id)");	
+				document.getElementById(parseInt(j + 20)).style.display = "inline-block";
 			}
 		}
 	});
@@ -241,6 +242,11 @@
 		// Send winner to server	
 		var j = parseInt(data) - 20;
 		socket.emit('czarSelected', { str : strings[j*2] , winner: parseInt(strings[j*2+1])});
+		
+		// Hide Answers next time card czar screen is shown
+		for (j = 0; strings[j*2]!=null; j++){
+			document.getElementById(parseInt(j + 20)).style.display = "none";
+		}
 	}
 	
 	
