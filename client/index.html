@@ -1,50 +1,55 @@
-<!-- Lobby Full Screen -->
-<div id="lobbyFull" style ="display:none">
-	Error, game lobby is currently full. Please try again some other time.
-</div>
+<body style = "padding-left: 5%; padding-top: 5%">
 
-<!-- Username Selection -->
-<div id="signDiv">
-	Please select a username: <input id="signDiv-username" type="text"></input><br>
-	<button id="signDiv-signIn">Sign In</button>
-</div>
-
-<!-- Create or join a game -->
-<div id="gameSelect" style="display:none">
-	Please enter a game name: <input id="gameSelect-game" type="text"></input><br>
-	Enter a password(optional): <input id="gameSelect-password" type = "text"></input><br>
-	<button id="gameSelect-create">Create</button>
-	<button id="gameSelect-join">Join</button>
-	<br><div id="gameList"></div>
-</div>
-
-<!-- Game Screen -->
-<div id="gameDiv" style="display:none;">
-	<!-- Game Canvas -->
-	<div id="game" style="position:absolute;" tabindex = "0">
-		<canvas id="ctx" style="position:absolute;border:1px solid #000000;"></canvas>
+	<!-- Lobby Full Screen -->
+	<div id="lobbyFull" style ="display:none">
+		Error, game lobby is currently full. Please try again some other time.
 	</div>
-	
-	<!-- Chat -->
-	<div id="chat">	
-		<hr/><div id = "chat-text-title" style= "text-align: center;"> Write Something Here
-		<select name="chats" id = "chats" onchange = "displayChat()">
-			<option value="game"> In-Game Chat</option>
-			<option value="universal">Universal Chat</option>
-		</select></div><hr />
-		<div id="chat-text" style="overflow-y:scroll; display:none"></div>
-		<div id="chat-group" style="overflow-y:scroll"></div>
-		<form id="chat-form" autocomplete="off">
-			<input id="chat-input" type="text"></input>
-		</form>
-	</div>
-</div>
 
+	<!-- Username Selection -->
+	<div id="signDiv">
+		Please select a username: <input id="signDiv-username" type="text"></input><br>
+		<button id="signDiv-signIn">Sign In</button>
+	</div>
+
+	<!-- Create or join a game -->
+	<div id="gameSelect" style="display:none">
+		Please enter a game name: <input id="gameSelect-game" type="text"></input><br>
+		Enter a password(optional): <input id="gameSelect-password" type = "text"></input><br>
+		<button id="gameSelect-create">Create</button>
+		<button id="gameSelect-join">Join</button>
+		<br><div id="gameList"></div>
+	</div>
+
+	<!-- Game Screen -->
+	<div id="gameDiv" style="display:none;">
+		<!-- Game Canvas -->
+		<div id="game" style="position:absolute;" tabindex = "0">
+			<div id="ctx" style="position:absolute;border:1px solid #000000;"></div>
+		</div>
+		
+		<!-- Chat -->
+		<div id="chat">	
+			<hr/><div id = "chat-text-title" style= "text-align: center;"> Write Something Here
+			<select name="chats" id = "chats" onchange = "displayChat()">
+				<option value="game"> In-Game Chat</option>
+				<option value="universal">Universal Chat</option>
+			</select></div><hr />
+			<div id="chat-text" style="overflow-y:scroll; display:none"></div>
+			<div id="chat-group" style="overflow-y:scroll"></div>
+			<form id="chat-form" autocomplete="off">
+				<input id="chat-input" type="text"></input>
+			</form>
+		</div>
+	</div>
+
+	<!-- Game Over Screen -->
+	<div id = "endGame"></div>
+
+</body>
 <!-- Socket.io -->
-<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js"></script>
 
 <script>
-	
 	var socket = io();
 	
 	// Disable context menu on mouse right click
@@ -57,6 +62,241 @@
 		document.getElementById('lobbyFull').style.display = "inline-block";
 		document.getElementById('signDiv').style.display = "none";
 	});
+	
+	// If player disconnects during game, end game
+	socket.on('endOfGame', function(str){
+		var endGame = document.getElementById('endGame');
+		endGame.innerHTML = "<h1>" + str + " has left, and so the game has ended...</h1>";
+		endGame.style.display = "inline-block";
+		document.getElementById('gameDiv').style.display = "none";
+		socket.disconnect();
+	});
+	
+	//----------------------------------------
+	//			Cards Against Humanity Game
+	// ---------------------------------------
+	
+	// Select canvas and add "row" class for Bootstrap
+	var canvas = document.getElementById("ctx");
+	canvas.className = "row";
+	
+	//Initialize cardId (selected card) as null
+	var cardId = null;
+
+	// Add 8 card divs to the canvas
+	for ( var i = 1; i <= 8 ; i++){
+		
+	}
+
+	//When game starts
+	socket.on('startGame',function(){
+		// Create and draw 8 cards
+		for ( var i = 1; i <= 8 ; i++){
+			var div = document.createElement('div');
+			div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
+			div.id = i;
+			canvas.appendChild(div);
+			div.setAttribute("onclick", "selected(this.id)");
+			//div.style.borderRadius = "25px";
+			//div.style.border = "2px solid #73AD21";
+			drawAnswer(i);
+		}
+		
+		//Create a div for scoreboard
+		var div = document.createElement('div');
+		div.id = "scores";
+		div.style.borderRadius = "25px";
+		div.style.border = "2px solid #73AD21";
+	})
+
+	// Select a card
+	function selected(id){
+		document.getElementById(id).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default active";
+		clear(cardId);
+		cardId = id;
+	}	
+
+	// Deselect a card
+	function clear(id){
+		if (cardId!=null){
+			document.getElementById(id).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
+			cardId = null;
+		}
+	}
+
+	// Play a card
+	function playCard(){	
+		var string = document.getElementById(cardId).innerHTML;
+		socket.emit('playedCard', string);
+		drawAnswer(cardId);
+	}
+	
+	// Request a new card for id
+	function drawAnswer(id){
+		socket.emit('drawAnswer', id);
+		clear(cardId);
+	}
+	
+	// When server returns an answer card 
+	socket.on('answerCard', function(data){
+		document.getElementById(data.cardId).innerHTML = data.str;
+	});
+	
+	// When server updates scoreboard
+	socket.on('updateScores', function(data){
+	var temp = document.getElementById('scores');
+	if (temp != null)
+		temp.innerHTML = data;
+	});
+	
+	// When hosting
+	socket.on('hosting', function(){
+		var players = new List();
+		var currplayer = null;
+		// Read in and shuffle answer cards
+		var answers = answerText.split(/<>/);
+		for (var i = 0; i < answers.length; i++){
+			var j = Math.floor(Math.random()*answers.length);
+			var temp = answers[i];
+			answers[i] = answers[j];
+			answers[j] = temp;
+		}
+		
+		// Read in and shuffle question cards
+		var questions = questionText.split(/<>/);
+		for (var i = 0; i < questions.length; i++){
+			var j = Math.floor(Math.random()*questions.length);
+			var temp = questions[i];
+			questions[i] = questions[j];
+			questions[j] = temp;
+		}
+		
+		var answerCount = 0;
+		var questionCount = 0;
+		
+		// If server requests answer card
+		socket.on('requestAnswer', function(data){
+			var temp = answers[answerCount++];
+			var data = {cardId: data.cardId, socket: data.socket, str: temp};
+			socket.emit('hostAnswer', data);
+		});
+		
+		// When a user plays a card
+		socket.on('played', function(playerId){
+			played(playerId);
+			if(players.allPlayed()){
+				players.reset;	
+				newTurn();
+			}
+		});
+		
+		// New turn
+		function newTurn(){
+			// Initialize player the first time
+			if (currplayer == null)
+				currplayer = players.head;
+			// If we can go to next player do so
+			else if (players.next!=null)
+				currplayer = players.next;	
+			// Otherwise go back to start of list
+			else 
+				currplayer = players.head;		
+				
+			var temp = questions[questionCount++];
+			var data = {socket: currplayer.playerId, str: temp};
+			socket.emit('cardCzar', data);
+		}
+		
+		// Add "start" button for game
+		var div = document.createElement('div');
+		div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
+		div.id = "startButton";
+		canvas.appendChild(div);
+		div.setAttribute("onclick", "socket.emit('startGame')");
+		div.innerHTML = "Click here to start the game!!"
+		
+		socket.on('startGame', function(){
+			document.getElementById("startButton").style.display = "none";
+		});
+		
+		socket.on('addPlayer', function(socket){
+			players.add(socket.id);
+		});
+		
+		socket.on('minPlayersNotMet', function (data){
+			alert("Error not enough players. You have: " + data.numPlayers + ". You need: " + data.playersNeeded + "!");
+		});
+		
+		//###########################################
+		//#		Linked List Functions				#
+		//###########################################
+		// Adapted from code online https://code.tutsplus.com/articles/data-structures-with-javascript-singly-linked-list-and-doubly-linked-list--cms-23392
+
+		function Node(playerId)
+		{
+			this.playerId = playerId;
+			this.played = false;
+			this.next = null;
+		}
+			
+		function List()
+		{
+			this._length = 0;
+			this.head = null;
+		}
+			
+		List.prototype.add = function (playerId)
+		{
+			var node = new Node(playerId),
+				currentNode = this.head;
+			
+			// Empty list
+			if (!currentNode)
+			{
+				this.head = node;
+				this._length++;
+				return node;
+			}
+			
+			while (currentNode.next)
+			{
+				currentNode = currentNode.next;
+			}
+			
+			currentNode.next = node;
+			this._length++;
+			return node;
+		}
+		List.prototype.played = function (playerId)
+		{
+			currentNode = this.head;
+			while (currentNode.next){
+				if (currentNode.playerId == playerId){
+					currentNode.played = true;
+					return;
+				}	
+			}
+		}
+		List.prototype.reset = function()
+		{
+			currentNode = this.head;
+			while (currentNode.next){
+				currentNode.played = false;
+			}
+		}
+		
+		List.prototype.allPlayed = function()
+		{
+			currentNode = this.head;
+			while (currentNode.next){
+				if (currentNode.played == false)
+					return false;
+			}
+			return true;
+		}
+	});
+	
+	
 	
 	//----------------------------------------
 	// 			Set Width / Height
@@ -82,7 +322,13 @@
 			WIDTH = WIDTH.substring(0, WIDTH.indexOf("%")) * window.innerWidth / 100;
 		if (isNaN(HEIGHT))
 			HEIGHT = HEIGHT.substring(0, HEIGHT.indexOf("%")) * window.innerHeight /100;
-			
+		
+		// Set body padding to center game on screen
+		 document.getElementsByTagName("BODY")[0].style.paddingLeft = (window.innerWidth - WIDTH)/2;
+		if (window.innerHeight > (HEIGHT * 1.5 + 20))
+			document.getElementsByTagName("BODY")[0].style.paddingTop = (window.innerHeight - (HEIGHT * 1.5 + 20)) / 2;
+
+		// Set Width and Height of all Elements on the game page
 		document.getElementById('ctx').style.width = WIDTH;
 		document.getElementById('ctx').style.height = HEIGHT;
 		document.getElementById('chat-text').style.width = WIDTH;
@@ -183,6 +429,7 @@
 	
 	gameSelectJoin.onclick = function(){
 		gameSelectGame.value = gameSelectGame.value.replace(/\s/g,'');
+		gameSelectGame.value = filterText(gameSelectGame.value);
 		if (gameSelectGame.value.length > 3){
 			socket.emit('joinGame',gameSelectGame.value, gameSelectPassword.value);
 		}
@@ -192,6 +439,7 @@
 	
 	socket.on('joinGameResponse',function(data){
 		if(data.success){
+			clearInterval(showPublicGames);
 			gameSelect.style.display = 'none';
 			gameDiv.style.display = 'inline-block';
 			if (!data.chat)
@@ -200,12 +448,14 @@
 				document.getElementById('chats').style.display = 'none';
 			if(data.controls)
 				trackControls(data.wasd);
-			clearInterval(showPublicGames);
+				
 		} else {
 			if (data.gameExist)
 				alert("Incorrect password");
 			else if (data.gameFull)
 				alert("Game is full");
+			else if (data.started)
+				alert("Game is in progress")
 			else
 				alert("Game doesn't exist");
 		}
@@ -252,6 +502,20 @@
 			chatInput.value = '';		
 		}
 	}
+	
+	//----------------------------------------
+	//			Code Injection Security
+	// ---------------------------------------
+	
+	filterText = function(text){
+		// Remove everything except accepted characters
+		text = text.replace(/[^ a-zA-Z0-9.,!?:;()áéíóúÁÉÍÓÚ]/g, "");
+		// Remove multiple spaces
+		text = text.replace(/[ ]+/g, " ");
+		return text;
+	}
+	
+	/*
 	
 	//----------------------------------------
 	// 				Controls
@@ -303,16 +567,14 @@
 				socket.emit('keyPress',{inputId:'up',state:false});
 		}
 	}
-	
-	//----------------------------------------
-	//			Code Injection Security
-	// ---------------------------------------
-	
-	filterText = function(text){
-		// Remove everything except accepted characters
-		text = text.replace(/[^ a-zA-Z0-9.,!?:;()áéíóúÁÉÍÓÚ]/g, "");
-		// Remove multiple spaces
-		text = text.replace(/[ ]+/g, " ");
-		return text;
-	}
+	*/
 </script>
+
+<!-- Source files for Question and Answer text -->
+<script  src="/client/answers.txt"></script>
+<script  src="/client/questions.txt"></script>
+
+<!-- Bootstrap CDN -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
