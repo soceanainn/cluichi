@@ -121,6 +121,7 @@
 		//Create a div for scoreboard
 		div = document.createElement('div');
 		div.id = "scores";
+		div.className = "col-sm-12 col-md-12 col-lg-12";
 		div.style.borderRadius = "25px";
 		div.style.border = "2px solid #fff";
 		div.style.paddingLeft = "5%";
@@ -131,8 +132,8 @@
 
 	// Select a card
 	function selected(id){
-		document.getElementById(id).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default active";
 		clear(cardId);
+		document.getElementById(id).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default active";
 		cardId = id;
 	}	
 
