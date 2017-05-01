@@ -219,7 +219,7 @@ io.sockets.on('connection', function(socket){
 	// Card Czar Must Judge
 	socket.on('judge', function(data){
 		// Display answers
-		var strings = data.str.split(/<>/);
+		var strings = data.str.split(/<>/).filter(Boolean);
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id)
 				for (var j = 0; strings[j*2]!=null; j++)
