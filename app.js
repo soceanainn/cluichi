@@ -43,7 +43,7 @@ var GAME_LIST = [];		// str name, int numPlayers, str gamePassword, bool started
 // Generate a list of public games every 5 seconds
 var publicGames;
 setInterval(function() {
-		publicGames = "List of Public Games: </div><div>";
+		publicGames = "Liosta na gCLuichí Poiblí: </div><div>";
 		for(var i in GAME_LIST){
 			if (GAME_LIST[i].started == false) // Waiting to start
 				if (GAME_LIST[i].gamePassword === "") //No password
@@ -171,7 +171,7 @@ io.sockets.on('connection', function(socket){
 		SOCKET_LIST[PLAYER_LIST[socket.id].host].emit('played', output);
 		for(var i in PLAYER_LIST){
 			if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-				var str = PLAYER_LIST[socket.id].name + ' has played a card';
+				var str = "D'imir " + PLAYER_LIST[socket.id].name + ' cárta';
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
 		}
@@ -192,9 +192,9 @@ io.sockets.on('connection', function(socket){
 		var winner = null;
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[id].host == PLAYER_LIST[i].host){
-				str += (PLAYER_LIST[i].name + "'s score is: " + PLAYER_LIST[i].score + "<br>");
+				str += ('Scór ' + PLAYER_LIST[i].name + " ná: " + PLAYER_LIST[i].score + "<br>");
 				if (PLAYER_LIST[i].score == 10)
-					winner = "The game is now over. " + PLAYER_LIST[i].name + " has won!";
+					winner = "Tá an cluiche thart anois. Bhuaigh " + PLAYER_LIST[i].name + "!";
 			}
 			
 		for (var i in PLAYER_LIST)
@@ -219,7 +219,7 @@ io.sockets.on('connection', function(socket){
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id){
 				SOCKET_LIST[i].emit('newQuestion', data.str);
-				SOCKET_LIST[i].emit('addToGame', PLAYER_LIST[data.socket].name + " is the card czar");
+				SOCKET_LIST[i].emit('addToGame', 'Is iad ' + PLAYER_LIST[data.socket].name + " Sár na gCártaí.");
 			}
 		SOCKET_LIST[data.socket].emit('cardCzar');	
 	});
@@ -231,7 +231,7 @@ io.sockets.on('connection', function(socket){
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id)
 				for (var j = 0; strings[j*2]!=null; j++)
-					SOCKET_LIST[i].emit('addToGame', "Answer # " + j + " is: " + strings[j*2]);
+					SOCKET_LIST[i].emit('addToGame', "Is é freagra # " + j + " ná: " + strings[j*2]);
 		// Send data to card czar for judging
 		SOCKET_LIST[data.socket].emit('judge', data.str);
 	});
@@ -239,7 +239,7 @@ io.sockets.on('connection', function(socket){
 	socket.on('czarSelected', function (data){
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host == socket.id)
-				SOCKET_LIST[i].emit('addToGame', "The winner was " + PLAYER_LIST[data.winner].name + " with : " + data.str);
+				SOCKET_LIST[i].emit('addToGame', "Bhuaigh " + PLAYER_LIST[data.winner].name + " le : " + data.str);
 		PLAYER_LIST[data.winner].score++;
 		updateScores(data.winner);
 		SOCKET_LIST[PLAYER_LIST[data.winner].host].emit('judged');
@@ -277,14 +277,14 @@ function disconnectUser(socket){
 			if (GAME_LIST[PLAYER_LIST[socket.id].host].started){
 				for(var i in PLAYER_LIST){ // End game that player has disconnected from
 					if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-						var str = PLAYER_LIST[socket.id].name + " has disconnected, the game is now over";
+						var str = 'Tá ' + PLAYER_LIST[socket.id].name + " tar éis dícheangailt, tá an cluiche thart.";
 						SOCKET_LIST[i].emit('endOfGame',str);
 					}
 				}
 			} else {
 				for(var i in PLAYER_LIST){ // Tell other players in game that user has disconnected
 					if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-						var str = PLAYER_LIST[socket.id].name + ": has disconnected";
+						var str = 'Tá ' + PLAYER_LIST[socket.id].name + " tar éis dícheangailt.";
 						GAME_LIST[PLAYER_LIST[socket.id].host].numPlayers--;
 						SOCKET_LIST[i].emit('addToGame',str);
 					}
@@ -332,7 +332,7 @@ joinGame = function(socket, host){
 	if (CHAT)
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host == host){
-				var str = PLAYER_LIST[socket.id].name + ' has connected to the game';
+				var str = 'Tá ' + PLAYER_LIST[socket.id].name + ' tar éis ceangailt leis an gcluiche';
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
 }
@@ -355,19 +355,16 @@ upClick = function(pressed, socket){
 		SOCKET_LIST[socket.id].emit('addToGame', 'You pressed up');
 	}
 }
-
 downClick = function(pressed, socket){
 	if(pressed){ // Down key is pressed
 		SOCKET_LIST[socket.id].emit('addToGame', 'You pressed down');
 	}
 }
-
 leftClick = function(pressed, socket){
 	if(pressed){ // Left key is pressed
 		SOCKET_LIST[socket.id].emit('addToGame', 'You pressed left');
 	}
 }
-
 rightClick = function(pressed, socket){
 	if(pressed){ // Right key is pressed
 		SOCKET_LIST[socket.id].emit('addToGame', 'You pressed right');
