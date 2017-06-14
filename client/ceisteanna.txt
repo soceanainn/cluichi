@@ -1,4 +1,4 @@
-let questionText = ´
+let questionText = `
 Cén fáth go bhfuil deacrachtaí codalta orm? <>
 __________ - An aip nua don iPhone. <>
 Céard é an boladh sin? <>
@@ -48,4 +48,4 @@ Tá cosc curtha ag an CGL ar __________ mar go dtugann sé lámh in uachtar d’
 An réim bia faiseanta i láthair na huaire ná ____________. <>
 Céar a eiríonn sé níos fearr le haois?<>
 Céard é an rud is measa a dhéanfaidh tú don shift?<>
-´;
+`;

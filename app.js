@@ -43,7 +43,7 @@ var GAME_LIST = [];		// str name, int numPlayers, str gamePassword, bool started
 // Generate a list of public games every 5 seconds
 var publicGames;
 setInterval(function() {
-		publicGames = "Liosta na gCLuichí Poiblí: </div><div>";
+		publicGames = "Liosta na gCluichí Poiblí: </div><div>";
 		for(var i in GAME_LIST){
 			if (GAME_LIST[i].started == false) // Waiting to start
 				if (GAME_LIST[i].gamePassword === "") //No password
@@ -171,7 +171,7 @@ io.sockets.on('connection', function(socket){
 		SOCKET_LIST[PLAYER_LIST[socket.id].host].emit('played', output);
 		for(var i in PLAYER_LIST){
 			if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-				var str = "D'imir " + PLAYER_LIST[socket.id].name + ' cárta';
+				var str = "D'imir " + PLAYER_LIST[socket.id].name + ' cárta.';
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
 		}
@@ -231,7 +231,7 @@ io.sockets.on('connection', function(socket){
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id)
 				for (var j = 0; strings[j*2]!=null; j++)
-					SOCKET_LIST[i].emit('addToGame', "Is é freagra # " + j + " ná: " + strings[j*2]);
+					SOCKET_LIST[i].emit('addToGame', "Is é freagra # " + j + " ná: " + strings[j*2] + ".");
 		// Send data to card czar for judging
 		SOCKET_LIST[data.socket].emit('judge', data.str);
 	});
@@ -332,7 +332,7 @@ joinGame = function(socket, host){
 	if (CHAT)
 		for (var i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host == host){
-				var str = 'Tá ' + PLAYER_LIST[socket.id].name + ' tar éis ceangailt leis an gcluiche';
+				var str = 'Tá ' + PLAYER_LIST[socket.id].name + ' tar éis ceangailt leis an gcluiche.';
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
 }
