@@ -1,8 +1,8 @@
-#.CartaiVsDaonnachta
+#. CartaiVsDaonnachta
 Cards Against Humanity Clone (Irish Language Version)
 Uses Node.js, Express and Socket.io
 
-##.To-Do:
+##. To-Do:
 -Add more questions (question sparsity limits the number of players who can play per game)
 -Make responsive (support phones better)
 -Account for questions that require two answers
