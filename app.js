@@ -3,7 +3,7 @@
 //---------------------------------------------- 
 
 var MAX_SERVER_PLAYERS = 100; 			// Number of players allowed on server at one time
-var MAX_GAME_PLAYERS = 8; 				// Number of players allowed in each game at a time
+var MAX_GAME_PLAYERS = 5; 				// Number of players allowed in each game at a time
 var MIN_GAME_PLAYERS = 3; 				// Number of players needed to start the game
 
 var CHAT = true;						// Display chat underneath game

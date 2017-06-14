@@ -2,21 +2,21 @@
 
 	<!-- Lobby Full Screen -->
 	<div id="lobbyFull" style ="display:none">
-		Error, game lobby is currently full. Please try again some other time.
+		Fadhb: Tá forsheomra an cluiche lán. Déan iarracht arís i gceann tamaill.
 	</div>
 
 	<!-- Username Selection -->
 	<div id="signDiv">
-		Please select a username: <input id="signDiv-username" type="text"></input><br>
-		<button id="signDiv-signIn">Sign In</button>
+		Roghnaigh ainm úsáideora: <input id="signDiv-username" type="text"></input><br>
+		<button id="signDiv-signIn">Logáil isteach</button>
 	</div>
 
 	<!-- Create or join a game -->
 	<div id="gameSelect" style="display:none">
-		Please enter a game name: <input id="gameSelect-game" type="text"></input><br>
-		Enter a password(optional): <input id="gameSelect-password" type = "text"></input><br>
-		<button id="gameSelect-create">Create</button>
-		<button id="gameSelect-join">Join</button>
+		Roghnaigh ainm don chluiche: <input id="gameSelect-game" type="text"></input><br>
+		Roghnaigh pasfhocal (ní gá): <input id="gameSelect-password" type = "text"></input><br>
+		<button id="gameSelect-create">Cruthaigh (cluiche nua)</button>
+		<button id="gameSelect-join">Ceangail (cluiche cruthaithe)</button>
 		<br><div id="gameList"></div>
 	</div>
 
@@ -29,10 +29,10 @@
 		
 		<!-- Chat -->
 		<div id="chat">	
-			<hr/><div id = "chat-text-title" style= "text-align: center;"> Write Something Here
+			<hr/><div id = "chat-text-title" style= "text-align: center;"> Scríobh rud éigin anseo:
 			<select name="chats" id = "chats" onchange = "displayChat()">
-				<option value="game"> In-Game Chat</option>
-				<option value="universal">Universal Chat</option>
+				<option value="game"> Comhrá an CLuiche</option>
+				<option value="universal">Comhrá Uilíoch</option>
 			</select></div><hr />
 			<div id="chat-text" style="overflow-y:scroll; display:none"></div>
 			<div id="chat-group" style="overflow-y:scroll"></div>
@@ -82,7 +82,6 @@
 	
 	//Initialize cardId (selected card) as null
 	var cardId = null;
-
 	//When game starts
 	socket.on('startGame',function(){
 		// Create and draw 8 cards
@@ -100,7 +99,7 @@
 		// "You are the Card Czar"
 		var div = document.createElement('div');
 		div.className = "col-sm-12 col-md-12 col-lg-12";
-		div.innerHTML = "<h2> You are the Card Czar <h2>";
+		div.innerHTML = "<h2> Is tusa Sár na gCartaí <h2>";
 		div.style.display = "none";
 		div.id = "cardCzar";
 		canvas.appendChild(div);
@@ -150,14 +149,12 @@
 		div.style.color = "#fff";
 		document.getElementById("bottom").appendChild(div);
 	})
-
 	// Select a card
 	function selected(id){
 		clear(cardId);
 		document.getElementById(id).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default active";
 		cardId = id;
 	}	
-
 	// Deselect a card
 	function clear(id){
 		if (cardId!=null){
@@ -165,7 +162,6 @@
 			cardId = null;
 		}
 	}
-
 	// Play a card
 	function playCard(){	
 		if (cardId == null) return;
@@ -333,7 +329,7 @@
 		div.id = "startButton";
 		canvas.appendChild(div);
 		div.setAttribute("onclick", "socket.emit('startGame')");
-		div.innerHTML = "Click here to start the game!!"
+		div.innerHTML = "Brú anseo chun an cluiche a thosú!!"
 		
 		socket.on('startGame', function(){
 			document.getElementById("startButton").style.display = "none";
@@ -345,13 +341,12 @@
 		});
 		
 		socket.on('minPlayersNotMet', function (data){
-			alert("Error not enough players. You have: " + data.numPlayers + ". You need: " + data.playersNeeded + "!");
+			alert("Fadhb: níl go leor imreoirí agat. Tá " + data.numPlayers + " imreoirí agat. Tá " + data.playersNeeded + " imreoirí ag teastáil!");
 		});
 		
 	//----------------------------------------
 	// 				Linked List
 	// ---------------------------------------
-
 		function Node(playerId)
 		{
 			this.playerId = playerId;
@@ -466,7 +461,6 @@
 		 document.getElementsByTagName("BODY")[0].style.paddingLeft = (window.innerWidth - WIDTH)/2;
 		if (window.innerHeight > (HEIGHT * 1.5 + 20))
 			document.getElementsByTagName("BODY")[0].style.paddingTop = (window.innerHeight - (HEIGHT * 1.5 + 20)) / 2;
-
 		// Set Width and Height of all Elements on the game page
 		document.getElementById('ctx').style.width = WIDTH;
 		document.getElementById('ctx').style.height = HEIGHT;
@@ -495,7 +489,7 @@
 			socket.emit('signIn',signDivUsername.value);
 		}
 		else
-			alert("Please enter a username with at 3 least characters");
+			alert("Is gá go bhfuil ar a laghad 3 caractair ag do ainm úsáideora.");
 	}
 	
 	socket.on('signInResponse',function(data){
@@ -508,7 +502,7 @@
 			document.getElementById('gameSelect-game').focus();
 			document.getElementById('gameSelect-game').select();
 		} else
-			alert("Username taken");
+			alert("Tá an ainm seo glactha cheana féin.");
 	});
 	
 	// Automatically Select Text Input Area
@@ -540,7 +534,7 @@
 			socket.emit('createGame',gameSelectGame.value, gameSelectPassword.value);
 		}
 		else
-			alert("Please enter a game name with at 4 least characters");
+			alert("Is gá go bhfuil ar a laghad 4 caractair ag ainm an chuiche.");
 	}
 	
 	showPublicGames = function() {
@@ -563,7 +557,7 @@
 				trackControls(data.wasd);
 			clearInterval(showPublicGames);
 		} else
-			alert("Game name taken");
+			alert("Tá an ainm seo glactha cheana féin");
 	});	
 	
 	gameSelectJoin.onclick = function(){
@@ -573,7 +567,7 @@
 			socket.emit('joinGame',gameSelectGame.value, gameSelectPassword.value);
 		}
 		else
-			alert("Please enter a game name with at 4 least characters");
+			alert("Is gá go bhfuil ar a laghad 4 caractair ag ainm an chuiche.");
 	}
 	
 	socket.on('joinGameResponse',function(data){
@@ -590,13 +584,13 @@
 				
 		} else {
 			if (data.gameExist)
-				alert("Incorrect password");
+				alert("Pasfhocal mícheart");
 			else if (data.gameFull)
-				alert("Game is full");
+				alert("Cluiche lán");
 			else if (data.started)
-				alert("Game is in progress")
+				alert("Cluiche tosaithe cheana féin")
 			else
-				alert("Game doesn't exist");
+				alert("Níl a leithead de cluiche ann");
 		}
 	});	
 	
@@ -710,8 +704,8 @@
 </script>
 
 <!-- Source files for Question and Answer text -->
-<script  src="/client/answers.txt"></script>
-<script  src="/client/questions.txt"></script>
+<script  src="/client/ceisteanna.txt"></script>
+<script  src="/client/freagrai.txt"></script>
 
 <!-- Bootstrap CDN -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
