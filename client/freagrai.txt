@@ -1,28 +1,28 @@
 let answerText = `
-Barack Obama Plaza .<>
-Gáire Jimmy Carr ag sochraid .<>
+Barack Obama Plaza.<>
+Gáire Jimmy Carr ag sochraid.<>
 Filíocht Éiléan Ní Chuilleanáin.<>
 Leipreacháin.<>
 Club an Chonradh.<>
-Daithí Ó’Sé ag an Rose de Thrá Lí .<>
-Ag bogadh go dtí An Chóire Thuaidh .<>
-Roofies .<>
+Daithí Ó’Sé ag an Rose de Thrá Lí.<>
+Ag bogadh go dtí An Chóire Thuaidh.<>
+Roofies.<>
 Leanbhaí marbha.<>
-Nathrach gnéas eitiltí .<>
+Nathrach gnéas eitiltí.<>
 Lámha Michelle Obama.<>
-Gnéas i ndoinsiún Gearmáinis .<>
+Gnéas i ndoinsiún Gearmáinis.<>
 Daoine bána.<>
 Ag éirí chomh feagrach go bhfaigheann tú adharc.<>
 A bheith nocht agus tú ag breathnú ar Nickelodeon.<>
 Ag guí go dtí nach bhfuil tú aerach a thuilleadh.<>
 Paidrín timpearach.<>
 Hitler.<>
-A bheith mar motherfucking draíodóir .<>
+A bheith mar motherfucking draíodóir.<>
 Cóisir bhreithleá díomách.<>
 Coileáin!.<>
 Muileann gaoithe lán de mharbháin.<>
 Buachaillí nach gcuireann glao ort.<>
-Ionadh le bhlas salannach .<>
+Ionadh le bhlas salannach.<>
 Ag fáil bháis.<>
 Féintruailliú.<>
 A bheith trí thine.<>
@@ -41,10 +41,8 @@ Nickelback.<>
 AN KKK.<>
 LachtadhAg déanamh an rud ceart.<>
 Beacha?.<>
-A bheith ar meisce ó folcadh béil .<>
- Míchéal D Ó hUigín.<>
- .<>
- .<>
+A bheith ar meisce ó folcadh béil.<> 
+Míchéal D Ó hUigín.<>
 Father Ted.<>
 Ag fáil réidh le do chuid éadaí.<>
 Steven Hawking ag caint go salach.<>
@@ -59,9 +57,9 @@ Cillian Murphy.<>
 72 maighdeana.<>
 Dáinséar stráinséara.<>
 Dóchas.<>
-Antalóp gásach .<>
+Antalóp gásach.<>
 BATMAN!!!.<>
-Ridireacht .<>
+Ridireacht.<>
 Ag ligean cloch dhúain tríd.<>
 Lobatóime le bior oighir.<>
 Ag bheith saibhir.<>
@@ -73,7 +71,7 @@ Croí linbh.<>
 Blaincéid bolgach.<>
 An brillín.<>
 Mícheál Ó Coileáin.<>
-An tSíleáil Ghloine .<>
+An tSíleáil Ghloine.<>
 Mary Lou McDonald.<>
 Troid piliúir ghnéasach.<>
 Giosta.<>
@@ -91,7 +89,6 @@ Gur cuma sa tioc leat faoin triú domhain.<>
 Ag lí rud éigin chun do sheilbh air a chinntiú.<>
 Gráinne Mhaol.<>
 An Meicsiceach díograiseach.<>
- .<>
 Fear ag glanadh cré de ghimséan spáide.<>
 Mo stádas gaoil.<>
 Ag sciúradh thíos faoi na fillidh.<>
@@ -99,11 +96,11 @@ Réaltaí pornagrafaíochta.<>
 Feoil chapaill.<>
 Taitneamh na Gréine agus Bogha Báistí.<>
 Ag súil le brúcht agus ag caitheamh amach ar an úrlár.<>
-Dóchán spontáineach duine .<>
+Dóchán spontáineach duine.<>
 Roghnú Nádúrtha.<>
 Heirpéas béil.<>
-Maidhm thuile .<>
-Gruagaí .<>
+Maidhm thuile.<>
+Gruagaí.<>
 Moncaí ag caitheamh toitín.<>
 Matáin bhoilg iontacha.<>
 Bolú maith a fháil.<>
@@ -114,134 +111,133 @@ Ag déanamh é sa tóin.<>
 Ag bheith dochreite.<>
 Mata-chleasaithe.<>
 Ag caitheamh fobhrístí laistigh amuigh ionas nach gá éadaí a nigh.<>
-Lanna didí .<>
+Lanna didí.<>
 Jimmy ag teacht amach ón Jasmine Palace le chop suey.<>
 Mála pónairí draiochtúla.<>
 Jazz-láimhe tapaidh.<>
 Coiscín lochtach.<>
 Mo ghrá-sa (idir lúibíní).<>
 Na Lochlainnigh.<>
-Ag fágáil teachtaireacht guth uafásach .<>
+Ag fágáil teachtaireacht guth uafásach.<>
 Toircheas déagóra.<>
 Tuismitheoirí marbha.<>
 Cáis the.<>
 Mo shaol ghnéis.<>
 Leon zú le croí throm.<>
 Brístí gan tóin.<>
-Ag marcaíocht i dtreo luí na gréine .<>
+Ag marcaíocht i dtreo luí na gréine.<>
 An uirí in easnamh ar Lance Armstrong.<>
 Díoltas, díoltas milis.<>
 Polladh ginitiúil.<>
-Seasamh lámh ceaig .<>
+Seasamh lámh ceaig.<>
 Darth Vader.<>
 Viagra.<>
 Neicrifilia.<>
 Hata iontach cúl.<>
 Faighin Toni Morrison.<>
 Coimpléasc Oedipus.<>
- .<>
 Ag siúl na drúchta go moch ar maidin.<>
-Réamh-dhéagóirí .<>
-Méaracha boda .<>
+Réamh-dhéagóirí.<>
+Méaracha boda.<>
 Cuisneoir lán de órgáin.<>
 Ag canadh A Mhuire Mháthair in ard do ghutha.<>
 Báidín fheilimí.<>
-Mífheidhmiú ardúcháin .<>
+Mífheidhmiú ardúcháin.<>
 Aengus Mac Grianna.<>
 Éirí Amach 1916.<>
 Na hoibrithe don Luas.<>
 An Poc ar Buile.<>
 Ag queefeáil.<>
 Dílleachtaí a chuireann gliondar ar do chroí.<>
-Pléascadh teirmeanúicléach .<>
+Pléascadh teirmeanúicléach.<>
 Ag camailéireacht sna Cluichí Oilimpeacha Speisialta.<>
 Slinkys atá i snaidhm.<>
 Nóiméad ciúnais.<>
 Crainn thabhaill.<>
-Ag roinnt snáthaidí .<>
-Glanadh eitneach .<>
+Ag roinnt snáthaidí.<>
+Glanadh eitneach.<>
 Mothúcháin.<>
 Páistí ar iall.<>
 Liathróidí.<>
-Daoine gan dídean .<>
+Daoine gan dídean.<>
 Ag ithe na cácaí ar fad roimh an díolacháin císte i gcomhair SEIF.<>
-Boladh sean-daoine .<>
+Boladh sean-daoine.<>
 Broim a scaoileadh agus ag siúl ar aghaidh.<>
 Teasbhás na cruinne.<>
- Mo dhronna.<>
+Mo dhronna.<>
 Sárú ár gceartaí daonna is bunúsaí.<>
 Ag méarú.<>
-An phlacaint .<>
+An phlacaint.<>
 Caitlín Maude.<>
 Lobhra.<>
 Créachtaí sá iolracha.<>
 Éin gan cumas eitilte.<>
-Goid uaighe .<>
+Goid uaighe.<>
 Físeán baile de Oprah ag caoineadh isteach i Lean Cuisine.<>
 Oompah-Loompaigh.<>
 Dúnmharú Brian Ború.<>
 Pornagraifíocht bhraideoige.<>
 Daidí-Fadhbanna.<>
 Sharon Ní Bheoláin.<>
-Ag ligean píosa beag fual amach .<>
+Ag ligean píosa beag fual amach.<>
 An mhíorúilt breith clainne.<>
 Ag tvuítéail.<>
 Scannáin vaimpír eile, a thiarcais.<>
 Britney Spears ag aois 55.<>
-Ceol nua-aoise .<>
+Ceol nua-aoise.<>
 An Cumann Naomh Uinsinn de Pól (VDP).<>
 Lucht UCD.<>
-Ceann dícheannta Justin Bieber .<>
-Culchies a thagann isteach sa Pháil .<>
-Pleann chun na 6 chuntae a thógáil ar ais .<>
+Ceann dícheannta Justin Bieber.<>
+Culchies a thagann isteach sa Pháil.<>
+Pleann chun na 6 chuntae a thógáil ar ais.<>
 Ceartaí na mBan a bhaint.<>
 Luaithreamháin Harambe a scaipeadh ar fud Páirc an Chrócaigh.<>
-Grianghraif nochta de Frances Fitzgerald .<>
+Grianghraif nochta de Frances Fitzgerald.<>
 Tuaisceart na hÉireann.<>
 Cártaí i gcoinne na Daonnachta.<>
-Tóin do mháthar .<>
+Tóin do mháthar.<>
 Brionglóidí faoi fir dhoiteáin.<>
 Dominos Pizza.<>
 Jab Cíche.<>
 Micripéineas.<>
 Áisigh nach bhfuil go maith ag mata.<>
 An fear bainne.<>
-Dualgais na mban chéile .<>
+Dualgais na mban chéile.<>
 Fuil Íosa Críost.<>
-Ag baint milseáin de phaiste .<>
-Mionlaigh na sochaí .<>
+Ag baint milseáin de phaiste.<>
+Mionlaigh na sochaí.<>
 Siad inchinne.<>
 Foireann ghleacaíochta na Síne.<>
-9/11 .<>
+9/11.<>
 Foiréigean póilíní.<>
 An Garda Síochána.<>
-Coppers ar Oíche Mháirt .<>
-Meitiolamfataimín criostail .<>
+Coppers ar Oíche Mháirt.<>
+Meitiolamfataimín criostail.<>
 Mo deamhain inmheánacha.<>
 Ag déanamh cac i do bhríste.<>
-Ubh a bhreith .<>
+Ubh a bhreith.<>
 Ag tabhairt 110%.<>
 Daoine dathúla.<>
 Faighin lofa.<>
 Kanye West.<>
-Anam dílis Harambe .<>
-Allas Donald Trump .<>
+Anam dílis Harambe.<>
+Allas Donald Trump.<>
 Brí cheart na Nollag.<>
 Banríon Éilís II.<>
 Na hAmanaigh.<>
 Sceimhlitheoirí uaigneacha.<>
 Nuair a scaoileann tú broim, ach tagann píosa cac amach.<>
 Bitseach beag gránna.<>
-Fothbhríste Niamh Cinn Ór .<>
-An tUasal Bryan Dobson ón SixOne .<>
-‘An Phoblacht Abú!’ .<>
+Fothbhríste Niamh Cinn Ór.<>
+An tUasal Bryan Dobson ón SixOne.<>
+‘An Phoblacht Abú!’.<>
 An Fíor-IRA.<>
 Cannabas saor in aisce.<>
 Meicsicigh mhídleathacha.<>
 Ciníochas a chur i bhfeidhm ar bhonn laethúil.<>
 D’iníon a phósadh.<>
 Mí-usáid leanaí.<>
-Corcaigh mar phríomhchathair na hÉireann .<>
+Corcaigh mar phríomhchathair na hÉireann.<>
 Fear grin buailte le hurchar millte.<>
 Na hÉireannaigh a cur faoi chois ar feadh 800 bliain.<>
 Sean Penn.<>
@@ -292,17 +288,17 @@ Mo anam.<>
 Smegma.<>
 Ghascealla suthach.<>
 An Tuaisceart.<>
-Christopher Walken .<>
+Christopher Walken.<>
 Poill an Ghlóir.<>
 AG luigeann ort gur cuma leat.<>
 Ceap Magadh Poiblí.<>
 Capall Beag Gleoite.<>
-Arnold Schwarzenegger .<>
+Arnold Schwarzenegger.<>
 Púib fánach ar an ghaoth.<>
 Féin-trúilliú isteach I deora páistí.<>
 Ag caitheamh smugairle ar duine gan dídean.<>
 Míostrú.<>
-Ath-bronnadh brontannais .<>
+Ath-bronnadh brontannais.<>
 Éad maidir le pilibíní.<>
 Féasta na hIspíní.<>
 Ag fháil an-ard.<>
@@ -356,7 +352,7 @@ Michéal D Ó hUigeann gléasta mar an linbh Íosa.<>
 Ais-éirí Michéal ó Coiléan.<>
 Harambé.<>
 Socky the Sock Monster.<>
-Dustin an Turcaí .<>
+Dustin an Turcaí.<>
 UCD.<>
 An Sesh.<>
 Egó Kanye West.<>
@@ -374,5 +370,5 @@ Ag caoineamh toisc go bhfuil an iomarca oibre agat.<>
 Daniel O’ Donnell ag déanamh na splits.<>
 Seadóigeáil.<>
 Ag slogadh cíocadh do sheanmháthair.<>
-Éire Caitliceach .<>
+Éire Caitliceach.<>
 `;

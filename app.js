@@ -238,7 +238,7 @@ io.sockets.on('connection', function(socket){
 	
 	socket.on('czarSelected', function (data){
 		for (var i in PLAYER_LIST)
-			if (PLAYER_LIST[i].host == socket.id)
+			if (PLAYER_LIST[i].host == PLAYER_LIST[socket.id].host)
 				SOCKET_LIST[i].emit('addToGame', "Bhuaigh " + PLAYER_LIST[data.winner].name + " le : " + data.str);
 		PLAYER_LIST[data.winner].score++;
 		updateScores(data.winner);

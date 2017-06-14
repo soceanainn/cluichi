@@ -80,6 +80,9 @@
 	var canvas = document.getElementById("ctx");
 	canvas.className = "row";
 	
+	// Keep track of Card Czar
+	var isCzar = false;
+	
 	//Initialize cardId (selected card) as null
 	var cardId = null;
 	//When game starts
@@ -121,9 +124,9 @@
 		// Create a "confirm selection" button
 		div = document.createElement('div');
 		div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
-		div.innerHTML = "Confirm selection";
+		div.innerHTML = "Cinntigh rogha";
 		document.getElementById("bottom").appendChild(div);
-		div.setAttribute("onclick", "playCard()");
+		div.setAttribute("onclick", "confirmSelection()");
 		
 		//Create a div for question (black card)
 		div = document.createElement('div');
@@ -174,6 +177,13 @@
 		}
 	}
 	
+	// Confirm Selected Card
+	function confirmSelection(){
+		if (isCzar)
+			czarSelected();
+		else playCard();
+	}
+	
 	// New turn
 	socket.on('newTurn', function(){
 		for (var i = 1; i <= 8; i++){ //Reenable all cards
@@ -192,6 +202,7 @@
 		for (var i = 1; i <= 8; i++)
 			document.getElementById(i).style.display = "none";
 		document.getElementById("cardCzar").style.display = "inline-block";
+		isCzar = true;
 	});
 	
 	// Request a new card for id
@@ -218,25 +229,27 @@
 				document.getElementById("cardCzar").appendChild(div);
 				div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
 				div.innerHTML = strings[j*2];
-				div.setAttribute("onclick", "czarSelected(this.id)");
+				div.setAttribute("onclick", "selected(this.id)");
 			}
 		} else {
 			for (var j = 0; strings[j*2]!=null; j++){
 				document.getElementById(parseInt(j + 20)).innerHTML = strings[j*2];
-				document.getElementById(parseInt(j + 20)).setAttribute("onclick", "czarSelected(this.id)");	
+				document.getElementById(parseInt(j + 20)).setAttribute("onclick", "selected(this.id)");	
 				document.getElementById(parseInt(j + 20)).style.display = "inline-block";
 			}
 		}
 	});
 	
-	function czarSelected(data){
+	function czarSelected(){
 		// Go back to answer view 
 		document.getElementById("cardCzar").style.display = "none";
 		for (var i = 1; i <= 8; i++)
 			document.getElementById(i).style.display = "inline-block";
+		
+		isCzar = false;
 			
 		// Send winner to server	
-		var j = parseInt(data) - 20;
+		var j = parseInt(cardId) - 20;
 		socket.emit('czarSelected', { str : strings[j*2] , winner: parseInt(strings[j*2+1])});
 		
 		// Hide Answers next time card czar screen is shown
