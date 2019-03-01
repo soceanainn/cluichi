@@ -306,11 +306,11 @@ isUsernameTaken= function(name){
 		if (PLAYER_LIST[i].name === name)
 			return true;
 	return false;
-}
+};
 
 addUser = function(name, socket){
 	PLAYER_LIST[socket.id] = {name: name, score: 0};
-}
+};
 
 findGame = function(name){
 	for (let i in GAME_LIST)
@@ -318,13 +318,13 @@ findGame = function(name){
 			return i;
 		}
 	return -1;	
-}
+};
 
 createGame = function(name, socket, gamePassword){
 	GAME_LIST[socket.id]= {name:name, gamePassword:gamePassword, numPlayers:1, started:false};
 	PLAYER_LIST[socket.id].host = socket.id;
 	socket.emit('hosting');
-}
+};
 
 joinGame = function(socket, host){
 	PLAYER_LIST[socket.id].host = host;
@@ -335,7 +335,7 @@ joinGame = function(socket, host){
 				let str = 'Tá ' + PLAYER_LIST[socket.id].name + ' tar éis ceangailt leis an gcluiche.';
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
-}
+};
 
 startGame = function(host){
 	GAME_LIST[host].started = true;
@@ -344,7 +344,7 @@ startGame = function(host){
 			SOCKET_LIST[host].emit('addPlayer', i);
 			SOCKET_LIST[i].emit('startGame');
 		}
-}
+};
 
 //---------------------------------------------
 //				CONTROLS
