@@ -7,14 +7,14 @@
 
 	<!-- Username Selection -->
 	<div id="signDiv">
-		Roghnaigh ainm úsáideora: <input id="signDiv-username" type="text"></input><br>
+		<label for="signDiv-username">Roghnaigh ainm úsáideora: </label><input id="signDiv-username" type="text"/><br>
 		<button id="signDiv-signIn">Logáil isteach</button>
 	</div>
 
 	<!-- Create or join a game -->
 	<div id="gameSelect" style="display:none">
-		Roghnaigh ainm don chluiche: <input id="gameSelect-game" type="text"></input><br>
-		Roghnaigh pasfhocal (ní gá): <input id="gameSelect-password" type = "text"></input><br>
+		<label for="gameSelect-game">Roghnaigh ainm don chluiche: </label><input id="gameSelect-game" type="text"/><br>
+		<label for="gameSelect-password">Roghnaigh pasfhocal (ní gá): </label><input id="gameSelect-password" type = "text"/><br>
 		<button id="gameSelect-create">Cruthaigh (cluiche nua)</button>
 		<button id="gameSelect-join">Ceangail (cluiche cruthaithe)</button>
 		<br><div id="gameList"></div>
@@ -29,15 +29,15 @@
 		
 		<!-- Chat -->
 		<div id="chat">	
-			<hr/><div id = "chat-text-title" style= "text-align: center;"> Scríobh rud éigin anseo:
-			<select name="chats" id = "chats" onchange = "displayChat()">
+			<hr/><div id = "chat-text-title" style= "text-align: center;">
+			<label for="chats"> Scríobh rud éigin anseo:</label><select name="chats" id = "chats" onchange = "displayChat()">
 				<option value="game"> Comhrá an Cluiche</option>
 				<option value="universal">Comhrá Uilíoch</option>
 			</select></div><hr />
 			<div id="chat-text" style="overflow-y:scroll; display:none"></div>
 			<div id="chat-group" style="overflow-y:scroll"></div>
 			<form id="chat-form" autocomplete="off">
-				<input id="chat-input" type="text"></input>
+				<label for="chat-input"></label><input id="chat-input" type="text"/>
 			</form>
 		</div>
 	</div>
@@ -50,12 +50,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js"></script>
 
 <script>
-	var socket = io();
+	let socket = io();
 	
 	// Disable context menu on mouse right click
 	document.oncontextmenu = function(event){
 		event.preventDefault();
-	}
+	};
 	
 	// If lobby is full
 	socket.on('lobbyFull', function(){
@@ -65,7 +65,7 @@
 	
 	// When game ends display str
 	socket.on('endOfGame', function(str){
-		var endGame = document.getElementById('endGame');
+		let endGame = document.getElementById('endGame');
 		endGame.innerHTML = "<h1>" + str + "</h1>";
 		endGame.style.display = "inline-block";
 		document.getElementById('gameDiv').style.display = "none";
@@ -77,30 +77,30 @@
 	// ---------------------------------------
 	
 	// Select canvas and add "row" class for Bootstrap
-	var canvas = document.getElementById("ctx");
+	let canvas = document.getElementById("ctx");
 	canvas.className = "row";
 	
 	// Keep track of Card Czar
-	var isCzar = false;
+	let isCzar = false;
 	
 	//Initialize cardId (selected card) as null
-	var cardId = null;
+	let cardId = null;
 	//When game starts
 	socket.on('startGame',function(){
 		// Create and draw 8 cards
-		for ( var i = 1; i <= 8 ; i++){
-			var div = document.createElement('div');
+		for ( let i = 1; i <= 8 ; i++){
+			let div = document.createElement('div');
 			div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
-			div.id = i;
+			div.id = i.toString();
 			canvas.appendChild(div);
-			div.setAttribute("onclick", "selected(this.id)");
+			div.setAttribute("onclick", selected(parseInt(j + 20)).toString());
 			//div.style.borderRadius = "25px";
-			//div.style.border = "2px solid #73AD21";
+			//div.style.border = "2px solid #73AD21";cs
 			drawAnswer(i);
 		}
 		
 		// "You are the Card Czar"
-		var div = document.createElement('div');
+		let div = document.createElement('div');
 		div.className = "col-sm-12 col-md-12 col-lg-12";
 		div.innerHTML = "<h2> Is tusa Sár na gCartaí <h2>";
 		div.style.display = "none";
@@ -117,7 +117,7 @@
 		div = document.createElement('div');
 		div.id = "bottom";
 		div.style.position = "absolute";
-		div.style.bottom = 0;
+		div.style.bottom = "0";
 		div.style.width = "100%";
 		canvas.appendChild(div);
 		
@@ -126,7 +126,7 @@
 		div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
 		div.innerHTML = "Cinntigh rogha";
 		document.getElementById("bottom").appendChild(div);
-		div.setAttribute("onclick", "confirmSelection()");
+		div.setAttribute("onclick", confirmSelection);
 		
 		//Create a div for question (black card)
 		div = document.createElement('div');
@@ -136,7 +136,7 @@
 		div.style.border = "2px solid #fff";
 		div.style.paddingLeft = "5%";
 		div.style.backgroundColor = "#333";
-		div.style.float = "right"
+		div.style.float = "right";
 		div.style.color = "#fff";
 		document.getElementById("bottom").appendChild(div);
 		
@@ -148,10 +148,10 @@
 		div.style.border = "2px solid #fff";
 		div.style.paddingLeft = "5%";
 		div.style.backgroundColor = "#333";
-		div.style.float = "left"
+		div.style.float = "left";
 		div.style.color = "#fff";
 		document.getElementById("bottom").appendChild(div);
-	})
+	});
 	// Select a card
 	function selected(id){
 		clear(cardId);
@@ -168,12 +168,12 @@
 	// Play a card
 	function playCard(){	
 		if (cardId == null) return;
-		var string = document.getElementById(cardId).innerHTML;
+		let string = document.getElementById(cardId).innerHTML;
 		socket.emit('playedCard', string);
 		drawAnswer(cardId);
-		for (var i = 1; i <= 8; i++){ // Disable all cards
-			document.getElementById(i).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default disabled";
-			document.getElementById(i).setAttribute("onclick", "");
+		for (let i = 1; i <= 8; i++){ // Disable all cards
+			document.getElementById(i.toString()).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default disabled";
+			document.getElementById(i.toString()).setAttribute("onclick", "");
 		}
 	}
 	
@@ -186,9 +186,9 @@
 	
 	// New turn
 	socket.on('newTurn', function(){
-		for (var i = 1; i <= 8; i++){ //Reenable all cards
-			document.getElementById(i).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
-			document.getElementById(i).setAttribute("onclick", "selected(this.id)");
+		for (let i = 1; i <= 8; i++){ //Reenable all cards
+			document.getElementById(i.toString()).className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
+			document.getElementById(i.toString()).setAttribute("onclick", selected(i).toString());
 		}
 	});
 	
@@ -199,8 +199,8 @@
 	
 	// New card Czar
 	socket.on('cardCzar', function(){
-		for (var i = 1; i <= 8; i++)
-			document.getElementById(i).style.display = "none";
+		for (let i = 1; i <= 8; i++)
+			document.getElementById(i.toString()).style.display = "none";
 		document.getElementById("cardCzar").style.display = "inline-block";
 		isCzar = true;
 	});
@@ -216,26 +216,26 @@
 		document.getElementById(data.cardId).innerHTML = data.str;
 	});
 	
-	var first = true;
-	var strings = "";
+	let first = true;
+	let strings = "";
 	// Judging time
 	socket.on('judge', function (data){
 		strings = data.split(/<>/).filter(Boolean);
 		if (first){
 			first = false;
-			for (var j = 0; strings[j*2]!=null; j++){
-				var div = document.createElement('div');
-				div.id = parseInt(j + 20);
+			for (let j = 0; strings[j*2]!=null; j++){
+				let div = document.createElement('div');
+				div.id = parseInt(j + 20).toString();
 				document.getElementById("cardCzar").appendChild(div);
 				div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
 				div.innerHTML = strings[j*2];
-				div.setAttribute("onclick", "selected(this.id)");
+				div.setAttribute("onclick", selected(parseInt(j + 20)).toString());
 			}
 		} else {
-			for (var j = 0; strings[j*2]!=null; j++){
-				document.getElementById(parseInt(j + 20)).innerHTML = strings[j*2];
-				document.getElementById(parseInt(j + 20)).setAttribute("onclick", "selected(this.id)");	
-				document.getElementById(parseInt(j + 20)).style.display = "inline-block";
+			for (let j = 0; strings[j*2]!=null; j++){
+				document.getElementById(parseInt(j + 20).toString()).innerHTML = strings[j*2];
+				document.getElementById(parseInt(j + 20).toString()).setAttribute("onclick", selected(parseInt(j + 20)).toString());
+				document.getElementById(parseInt(j + 20).toString()).style.display = "inline-block";
 			}
 		}
 	});
@@ -243,63 +243,63 @@
 	function czarSelected(){
 		// Go back to answer view 
 		document.getElementById("cardCzar").style.display = "none";
-		for (var i = 1; i <= 8; i++)
-			document.getElementById(i).style.display = "inline-block";
+		for (let i = 1; i <= 8; i++)
+			document.getElementById(i.toString()).style.display = "inline-block";
 		
 		isCzar = false;
 			
 		// Send winner to server	
-		var j = parseInt(cardId) - 20;
+		let j = parseInt(cardId) - 20;
 		socket.emit('czarSelected', { str : strings[j*2] , winner: parseInt(strings[j*2+1])});
 		
 		// Hide Answers next time card czar screen is shown
 		for (j = 0; strings[j*2]!=null; j++){
-			document.getElementById(parseInt(j + 20)).style.display = "none";
+			document.getElementById(parseInt(j + 20).toString()).style.display = "none";
 		}
 	}
 	
 	
 	// When server updates scoreboard
 	socket.on('updateScores', function(data){
-		var temp = document.getElementById('scores');
+		let temp = document.getElementById('scores');
 		if (temp != null)
 			temp.innerHTML = data;
 		// Set Height of Scoreboard and Question Card
-		var setHeight = (document.getElementById("scores").offsetHeight > document.getElementById("question").offsetHeight ?
+		let setHeight = (document.getElementById("scores").offsetHeight > document.getElementById("question").offsetHeight ?
 					document.getElementById("scores").offsetHeight : document.getElementById("question").offsetHeight);
-		document.getElementById("question").style.height = setHeight;
-		document.getElementById("scores").style.height = setHeight;	
+		document.getElementById("question").style.height = setHeight.toString();
+		document.getElementById("scores").style.height = setHeight.toString();
 	});
 	
 	// When hosting
 	socket.on('hosting', function(){
-		var players = new List();
-		var currplayer = null;
+		let players = new List();
+		let currplayer = null;
 		// Read in and shuffle answer cards
-		var answers = answerText.split(/<>/);
-		for (var i = 0; i < answers.length; i++){
-			var j = Math.floor(Math.random()*answers.length);
-			var temp = answers[i];
+		let answers = answerText.split(/<>/);
+		for (let i = 0; i < answers.length; i++){
+			let j = Math.floor(Math.random()*answers.length);
+			let temp = answers[i];
 			answers[i] = answers[j];
 			answers[j] = temp;
 		}
 		
 		// Read in and shuffle question cards
-		var questions = questionText.split(/<>/);
-		for (var i = 0; i < questions.length; i++){
-			var j = Math.floor(Math.random()*questions.length);
-			var temp = questions[i];
+		let questions = questionText.split(/<>/);
+		for (let i = 0; i < questions.length; i++){
+			let j = Math.floor(Math.random()*questions.length);
+			let temp = questions[i];
 			questions[i] = questions[j];
 			questions[j] = temp;
 		}
 		
-		var answerCount = 0;
-		var questionCount = 0;
+		let answerCount = 0;
+		let questionCount = 0;
 		
 		// If server requests answer card
 		socket.on('requestAnswer', function(data){
-			var temp = answers[answerCount++];
-			var data = {cardId: data.cardId, socket: data.socket, str: temp};
+			let temp = answers[answerCount++];
+			data = {cardId: data.cardId, socket: data.socket, str: temp};
 			socket.emit('hostAnswer', data);
 		});
 		
@@ -330,19 +330,19 @@
 				currplayer = players.head;	
 			// Keep track of card czar
 			players.cardCzar = currplayer.playerId;
-			var temp = questions[questionCount++];
-			var data = {socket: currplayer.playerId, str: temp};
+			let temp = questions[questionCount++];
+			let data = {socket: currplayer.playerId, str: temp};
 			socket.emit('cardCzar', data);
 			socket.emit('newTurn');
 		}
 		
 		// Add "start" button for game
-		var div = document.createElement('div');
+		let div = document.createElement('div');
 		div.className = "col-sm-12 col-md-12 col-lg-12 btn btn-default";
 		div.id = "startButton";
 		canvas.appendChild(div);
 		div.setAttribute("onclick", "socket.emit('startGame')");
-		div.innerHTML = "Brú anseo chun an cluiche a thosú!!"
+		div.innerHTML = "Brú anseo chun an cluiche a thosú!!";
 		
 		socket.on('startGame', function(){
 			document.getElementById("startButton").style.display = "none";
@@ -360,81 +360,72 @@
 	//----------------------------------------
 	// 				Linked List
 	// ---------------------------------------
-		function Node(playerId)
-		{
+		function Node(playerId) {
 			this.playerId = playerId;
 			this.played = false;
 			this.answer = "";
 			this.next = null;
 		}
 			
-		function List()
-		{
+		function List() {
 			this._length = 0;
 			this.head = null;
 			this.cardCzar = null;
 		}
 			
-		List.prototype.add = function (playerId)
-		{
-			var node = new Node(playerId),
+		List.prototype.add = function (playerId) {
+			let node = new Node(playerId),
 				currentNode = this.head;
 			
 			// Empty list
-			if (!currentNode)
-			{
+			if (!currentNode) {
 				this.head = node;
 				this._length++;
 				return node;
 			}
 			
-			while (currentNode.next)
-			{
-				currentNode = currentNode.next;
-			}
-			
+			while (currentNode.next) currentNode = currentNode.next;
 			currentNode.next = node;
 			this._length++;
 			return node;
-		}
-		List.prototype.cardPlayed = function (data)
-		{
-			currentNode = this.head;
+		};
+
+		List.prototype.cardPlayed = function (data) {
+			let currentNode = this.head;
 			while (currentNode != null){
-				if (currentNode.playerId == data.playerId){
+				if (currentNode.playerId === data.playerId){
 					currentNode.played = true;
 					currentNode.answer = data.str;
 					return;
 				}	
 				currentNode = currentNode.next;
 			}
-		}
-		List.prototype.reset = function()
-		{
-			currentNode = this.head;
+		};
+
+		List.prototype.reset = function() {
+			let currentNode = this.head;
 			while (currentNode != null){
 				currentNode.played = false;
 				currentNode = currentNode.next;
 			}
-		}
+		};
 		
-		List.prototype.allPlayed = function()
-		{
-			currentNode = this.head;
+		List.prototype.allPlayed = function() {
+			let currentNode = this.head;
 			while (currentNode != null){
-				if (currentNode.played == false)
-					if (currentNode.playerId != this.cardCzar)
+				if (currentNode.played === false)
+					if (currentNode.playerId !== this.cardCzar)
 						return false;
 				currentNode = currentNode.next;	
 			}
 			return true;
-		}
-		List.prototype.getAnswer = function()
-		{
-			currentNode = this.head;
-			var string = "";
+		};
+
+		List.prototype.getAnswer = function() {
+			let currentNode = this.head;
+			let string = "";
 			while (currentNode!= null){
-				if (currentNode.playerId != this.cardCzar){
+				if (currentNode.playerId !== this.cardCzar){
 					string += currentNode.answer + "<>" + currentNode.playerId + "<>";
 				}
 				currentNode = currentNode.next;	
@@ -451,8 +442,8 @@
 	
 	// Set WIDTH/HEIGHT
 	// px value (e.g. '800') or percentage (e.g. '80%')
-	var WIDTH = '90%';
-	var HEIGHT = '500';
+	let WIDTH = '90%';
+	let HEIGHT = '500';
 	
 	setWidthHeight(WIDTH, HEIGHT);
 	
@@ -490,10 +481,10 @@
 	//----------------------------------------
 	// 				Username Selection
 	// ---------------------------------------
-	var gameSelect = document.getElementById('gameSelect');
-	var signDiv = document.getElementById('signDiv');
-	var signDivUsername = document.getElementById('signDiv-username');
-	var signDivSignIn = document.getElementById('signDiv-signIn');
+	let gameSelect = document.getElementById('gameSelect');
+	let signDiv = document.getElementById('signDiv');
+	let signDivUsername = document.getElementById('signDiv-username');
+	let signDivSignIn = document.getElementById('signDiv-signIn');
 	
 	signDivSignIn.onclick = function(){
 		signDivUsername.value = signDivUsername.value.replace(/\s/g,'');
@@ -503,7 +494,7 @@
 		}
 		else
 			alert("Is gá go bhfuil ar a laghad 3 caractair ag do ainm úsáideora.");
-	}
+	};
 	
 	socket.on('signInResponse',function(data){
 		if(data.success){
@@ -524,7 +515,7 @@
 	
 	// Submit when enter is pressed
 	signDiv.addEventListener("keydown", function(event) {
-		if (event.keyCode == 13) {
+		if (event.keyCode === 13) {
 			signDivSignIn.click();
 		}
 	});
@@ -532,12 +523,11 @@
 	//----------------------------------------
 	// 				Game Selection
 	// ---------------------------------------
-	var gameDiv = document.getElementById('gameDiv');
-	var gameSelect = document.getElementById('gameSelect');
-	var gameSelectGame = document.getElementById('gameSelect-game');
-	var gameSelectCreate = document.getElementById('gameSelect-create');
-	var gameSelectJoin = document.getElementById('gameSelect-join');
-	var gameSelectPassword = document.getElementById('gameSelect-password');
+	let gameDiv = document.getElementById('gameDiv');
+	let gameSelectGame = document.getElementById('gameSelect-game');
+	let gameSelectCreate = document.getElementById('gameSelect-create');
+	let gameSelectJoin = document.getElementById('gameSelect-join');
+	let gameSelectPassword = document.getElementById('gameSelect-password');
 	
 	gameSelectCreate.onclick = function(){
 		gameSelectGame.value = gameSelectGame.value.replace(/\s/g,'');
@@ -545,14 +535,14 @@
 		gameSelectPassword.value = filterText(gameSelectPassword.value);
 		if (gameSelectGame.value.length > 3){
 			socket.emit('createGame',gameSelectGame.value, gameSelectPassword.value);
-		}
-		else
+		} else {
 			alert("Is gá go bhfuil ar a laghad 4 caractair ag ainm an chuiche.");
-	}
+		}
+	};
 	
 	showPublicGames = function() {
 		socket.emit('gameSelection');
-	}
+	};
 	
 	socket.on('publicGames', function (gameList){
 		document.getElementById('gameList').innerHTML = "<div>" + gameList + "</div>";
@@ -566,8 +556,8 @@
 				document.getElementById('chat').style.display = 'none';
 			if(!data.universal)
 				document.getElementById('chats').style.display = 'none';
-			if(data.controls)
-				trackControls(data.wasd);
+			//if(data.controls)
+			//	trackControls(data.wasd);
 			clearInterval(showPublicGames);
 		} else
 			alert("Tá an ainm seo glactha cheana féin");
@@ -581,7 +571,7 @@
 		}
 		else
 			alert("Is gá go bhfuil ar a laghad 4 caractair ag ainm an chuiche.");
-	}
+	};
 	
 	socket.on('joinGameResponse',function(data){
 		if(data.success){
@@ -592,8 +582,8 @@
 				document.getElementById('chat').style.display = 'none';
 			if(!data.universal)
 				document.getElementById('chats').style.display = 'none';
-			if(data.controls)
-				trackControls(data.wasd);
+			//if(data.controls)
+			//	trackControls(data.wasd);
 				
 		} else {
 			if (data.gameExist)
@@ -601,7 +591,7 @@
 			else if (data.gameFull)
 				alert("Cluiche lán");
 			else if (data.started)
-				alert("Cluiche tosaithe cheana féin")
+				alert("Cluiche tosaithe cheana féin");
 			else
 				alert("Níl a leithead de chluiche ann");
 		}
@@ -610,12 +600,11 @@
 	//----------------------------------------
 	// 				Chat
 	// ---------------------------------------
-	var chatDiv = document.getElementById('chat');
-	var chatText = document.getElementById('chat-text');
-	var chatInput = document.getElementById('chat-input');
-	var chatForm = document.getElementById('chat-form');
-	var groupChat = document.getElementById('chat-group');
-	var chats = document.getElementById('chats');
+	let chatText = document.getElementById('chat-text');
+	let chatInput = document.getElementById('chat-input');
+	let chatForm = document.getElementById('chat-form');
+	let groupChat = document.getElementById('chat-group');
+	let chats = document.getElementById('chats');
 	
 	socket.on('addToChat',function(data){
 		chatText.innerHTML += '<div>' + data + '</div>';
@@ -631,11 +620,11 @@
 		if (chats.value==="universal"){
 			chatText.style.display = 'inline-block';
 			groupChat.style.display = 'none';
-		}else {
+		} else {
 			chatText.style.display = 'none';
 			groupChat.style.display = 'inline-block';
 		}
-	}
+	};
 		
 	chatForm.onsubmit = function(e){
 		e.preventDefault();
@@ -647,7 +636,7 @@
 				socket.emit('sendMsgToGame', chatInput.value);
 			chatInput.value = '';		
 		}
-	}
+	};
 	
 	//----------------------------------------
 	//			Code Injection Security
@@ -668,7 +657,7 @@
 	// ---------------------------------------
 	trackControls = function(wasd){
 		if (wasd){ // Take WASD as up, left, down and right respectively, gameCanvas must be selected
-			var gameCanvas = document.getElementById('game');
+			let gameCanvas = document.getElementById('game');
 			gameCanvas.onkeydown = function(event){
 				if(event.keyCode === 68)	// D
 					socket.emit('keyPress',{inputId:'right',state:true});
