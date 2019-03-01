@@ -22,7 +22,7 @@ var server = require('http').Server(app);
 server.listen(process.env.PORT || 2000);
 
 app.get('/',function(req, res) {
-	res.sendFile(__dirname + '/client/index.html');
+	res.sendFile(__dirname + '/client/CartaiVsDaonnachta/index.html')
 });
 
 app.use('/client',express.static(__dirname + '/client'));
