@@ -2,22 +2,22 @@
 // 			CONSTANTS
 //---------------------------------------------- 
 
-var MAX_SERVER_PLAYERS = 100; 			// Number of players allowed on server at one time
-var MAX_GAME_PLAYERS = 5; 				// Number of players allowed in each game at a time
-var MIN_GAME_PLAYERS = 3; 				// Number of players needed to start the game
+let MAX_SERVER_PLAYERS = 100; 			// Number of players allowed on server at one time
+let MAX_GAME_PLAYERS = 5; 				// Number of players allowed in each game at a time
+let MIN_GAME_PLAYERS = 3; 				// Number of players needed to start the game
 
-var CHAT = true;						// Display chat underneath game
-var UNIVERSAL_CHAT = true;				// Allow players to select universal chat
+let CHAT = true;						// Display chat underneath game
+let UNIVERSAL_CHAT = true;				// Allow players to select universal chat
 
-var TRACK_CONTROLS = false;				// Capture key press events
-var INCLUDE_WASD = false;				// Allow WASD to be used as arrow keys
+let TRACK_CONTROLS = false;				// Capture key press events
+let INCLUDE_WASD = false;				// Allow WASD to be used as arrow keys
 
 //----------------------------------------------
 // 			Set Up Express and Server
 //---------------------------------------------- 
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
+let express = require('express');
+let app = express();
+let server = require('http').Server(app);
 
 server.listen(process.env.PORT || 2000);
 
@@ -32,19 +32,19 @@ console.log("Server started.");
 // 				Set Up Sockets, Players and Game
 //-----------------------------------------------------
 
-var io = require('socket.io')(server);
-var numberOfPlayers = 0; //Number of players in lobby
+let io = require('socket.io')(server);
+let numberOfPlayers = 0; //Number of players in lobby
 
 // Keep track of sockets, players usernames,games, and scores in use
-var SOCKET_LIST = []; 	
-var PLAYER_LIST = [];	// str name, int host, int score
-var GAME_LIST = [];		// str name, int numPlayers, str gamePassword, bool started
+let SOCKET_LIST = []; 	
+let PLAYER_LIST = [];	// str name, int host, int score
+let GAME_LIST = [];		// str name, int numPlayers, str gamePassword, bool started
 
 // Generate a list of public games every 5 seconds
-var publicGames;
+let publicGames;
 setInterval(function() {
 		publicGames = "Liosta na gCluichí Poiblí: </div><div>";
-		for(var i in GAME_LIST){
+		for(let i in GAME_LIST){
 			if (GAME_LIST[i].started == false) // Waiting to start
 				if (GAME_LIST[i].gamePassword === "") //No password
 					if(GAME_LIST[i].numPlayers < MAX_GAME_PLAYERS) // Isn't full
@@ -102,7 +102,7 @@ io.sockets.on('connection', function(socket){
 	
 	// Joining a Game
 	socket.on('joinGame',function(name, gamePassword){
-		var i = findGame(name);
+		let i = findGame(name);
 		if (i==-1){ // If game doesn't exist
 				socket.emit('joinGameResponse',{success:false, gameExist:false});
 		} else { // If game exists
@@ -123,17 +123,17 @@ io.sockets.on('connection', function(socket){
 	
 	//	Universal Chat
 	socket.on('sendMsgToServer',function(data){ // When user sends a message
-		for(var i in SOCKET_LIST){
-			var str = PLAYER_LIST[socket.id].name + ': ' + data;
+		for(let i in SOCKET_LIST){
+			let str = PLAYER_LIST[socket.id].name + ': ' + data;
 			SOCKET_LIST[i].emit('addToChat',str);
 		}
 	});
 	
 	//	In-game Chat
 	socket.on('sendMsgToGame',function(data){ // When user sends a message
-		for(var i in PLAYER_LIST){
+		for(let i in PLAYER_LIST){
 			if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-				var str = PLAYER_LIST[socket.id].name + ': ' + data;
+				let str = PLAYER_LIST[socket.id].name + ': ' + data;
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
 		}
@@ -167,11 +167,11 @@ io.sockets.on('connection', function(socket){
 	
 	// When a user plays a card
 	socket.on('playedCard', function(data){
-		var output = {playerId : socket.id, str : data};
+		let output = {playerId : socket.id, str : data};
 		SOCKET_LIST[PLAYER_LIST[socket.id].host].emit('played', output);
-		for(var i in PLAYER_LIST){
+		for(let i in PLAYER_LIST){
 			if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-				var str = "D'imir " + PLAYER_LIST[socket.id].name + ' cárta.';
+				let str = "D'imir " + PLAYER_LIST[socket.id].name + ' cárta.';
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
 		}
@@ -188,16 +188,16 @@ io.sockets.on('connection', function(socket){
 	
 	// Update the scoreboard
 	function updateScores(id){
-		var str = '<h3 style = "text-align: center">Scoreboard</h3>';
-		var winner = null;
-		for (var i in PLAYER_LIST)
+		let str = '<h3 style = "text-align: center">Scoreboard</h3>';
+		let winner = null;
+		for (let i in PLAYER_LIST)
 			if (PLAYER_LIST[id].host == PLAYER_LIST[i].host){
 				str += ('Scór ' + PLAYER_LIST[i].name + " ná: " + PLAYER_LIST[i].score + "<br>");
 				if (PLAYER_LIST[i].score == 10)
 					winner = "Tá an cluiche thart anois. Bhuaigh " + PLAYER_LIST[i].name + "!";
 			}
 			
-		for (var i in PLAYER_LIST)
+		for (let i in PLAYER_LIST)
 			if (PLAYER_LIST[id].host == PLAYER_LIST[i].host){
 				if (winner != null)
 					SOCKET_LIST[i].emit('endOfGame', winner);
@@ -209,14 +209,14 @@ io.sockets.on('connection', function(socket){
 	// New Turn
 	socket.on('newTurn', function(){
 		updateScores(socket.id);
-		for (var i in PLAYER_LIST)
+		for (let i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id)
 				SOCKET_LIST[i].emit('newTurn');
 	});
 	
 	// New Card Czar
 	socket.on('cardCzar', function(data){
-		for (var i in PLAYER_LIST)
+		for (let i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id){
 				SOCKET_LIST[i].emit('newQuestion', data.str);
 				SOCKET_LIST[i].emit('addToGame', 'Is iad ' + PLAYER_LIST[data.socket].name + " Sár na gCártaí.");
@@ -227,17 +227,17 @@ io.sockets.on('connection', function(socket){
 	// Card Czar Must Judge
 	socket.on('judge', function(data){
 		// Display answers
-		var strings = data.str.split(/<>/).filter(Boolean);
-		for (var i in PLAYER_LIST)
+		let strings = data.str.split(/<>/).filter(Boolean);
+		for (let i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host = socket.id)
-				for (var j = 0; strings[j*2]!=null; j++)
+				for (let j = 0; strings[j*2]!=null; j++)
 					SOCKET_LIST[i].emit('addToGame', "Is é freagra # " + j + " ná: " + strings[j*2] + ".");
 		// Send data to card czar for judging
 		SOCKET_LIST[data.socket].emit('judge', data.str);
 	});
 	
 	socket.on('czarSelected', function (data){
-		for (var i in PLAYER_LIST)
+		for (let i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host == PLAYER_LIST[socket.id].host)
 				SOCKET_LIST[i].emit('addToGame', "Bhuaigh " + PLAYER_LIST[data.winner].name + " le : " + data.str);
 		PLAYER_LIST[data.winner].score++;
@@ -275,16 +275,16 @@ function disconnectUser(socket){
 		// Check if game still exists
 		if (GAME_LIST[PLAYER_LIST[socket.id].host]!=null){
 			if (GAME_LIST[PLAYER_LIST[socket.id].host].started){
-				for(var i in PLAYER_LIST){ // End game that player has disconnected from
+				for(let i in PLAYER_LIST){ // End game that player has disconnected from
 					if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-						var str = 'Tá ' + PLAYER_LIST[socket.id].name + " tar éis dícheangailt, tá an cluiche thart.";
+						let str = 'Tá ' + PLAYER_LIST[socket.id].name + " tar éis dícheangailt, tá an cluiche thart.";
 						SOCKET_LIST[i].emit('endOfGame',str);
 					}
 				}
 			} else {
-				for(var i in PLAYER_LIST){ // Tell other players in game that user has disconnected
+				for(let i in PLAYER_LIST){ // Tell other players in game that user has disconnected
 					if (PLAYER_LIST[socket.id].host==PLAYER_LIST[i].host){
-						var str = 'Tá ' + PLAYER_LIST[socket.id].name + " tar éis dícheangailt.";
+						let str = 'Tá ' + PLAYER_LIST[socket.id].name + " tar éis dícheangailt.";
 						GAME_LIST[PLAYER_LIST[socket.id].host].numPlayers--;
 						SOCKET_LIST[i].emit('addToGame',str);
 					}
@@ -302,7 +302,7 @@ function disconnectUser(socket){
 }
 
 isUsernameTaken= function(name){
-	for (var i in PLAYER_LIST) // Check if  name is already taken
+	for (let i in PLAYER_LIST) // Check if  name is already taken
 		if (PLAYER_LIST[i].name === name)
 			return true;
 	return false;
@@ -313,7 +313,7 @@ addUser = function(name, socket){
 }
 
 findGame = function(name){
-	for (var i in GAME_LIST)
+	for (let i in GAME_LIST)
 	if (GAME_LIST[i].name == name){
 			return i;
 		}
@@ -330,16 +330,16 @@ joinGame = function(socket, host){
 	PLAYER_LIST[socket.id].host = host;
 	GAME_LIST[host].numPlayers++;
 	if (CHAT)
-		for (var i in PLAYER_LIST)
+		for (let i in PLAYER_LIST)
 			if (PLAYER_LIST[i].host == host){
-				var str = 'Tá ' + PLAYER_LIST[socket.id].name + ' tar éis ceangailt leis an gcluiche.';
+				let str = 'Tá ' + PLAYER_LIST[socket.id].name + ' tar éis ceangailt leis an gcluiche.';
 				SOCKET_LIST[i].emit('addToGame',str);
 			}
 }
 
 startGame = function(host){
 	GAME_LIST[host].started = true;
-	for (var i in PLAYER_LIST)
+	for (let i in PLAYER_LIST)
 		if (PLAYER_LIST[i].host == host){
 			SOCKET_LIST[host].emit('addPlayer', i);
 			SOCKET_LIST[i].emit('startGame');
