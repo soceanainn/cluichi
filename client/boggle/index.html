@@ -21,20 +21,23 @@
 </head>
 <body style="padding: 5%;">
     <div class="container">
-        <div id="row0" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
-        <div id="row1" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
-        <div id="row2" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
-        <div id="row3" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
-        <div id="scoreboard" class="row" style="padding-top: 5%">
-            <div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div>
-            <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2 btn btn-default" onclick="submit()">Iontráil focal</div>
-            <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2 btn btn-default" onclick="reset()">Glan an bord</div>
+        <div id="game">
+            <div id="row0" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
+            <div id="row1" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
+            <div id="row2" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
+            <div id="row3" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
+            <div id="scoreboard" class="row" style="padding-top: 5%">
+                <div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div>
+                <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2 btn btn-default" onclick="submit()">Iontráil focal</div>
+                <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2 btn btn-default" onclick="reset()">Glan an bord</div>
+            </div>
         </div>
         <div class="row">
             <div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div>
             <div class="col-xs-12 col-sm-8 offset-sm-2 col-md-4 offset-md-4 col-lg-4 offset-lg-4">
                 <h3 id="score">Scór: 0</h3>
-                <h3>Aimsithe:</h3>
+                <h3 id="time">Am Fágtha: 180s</h3>
+                <h3>Focail Aimsithe:</h3>
                 <div id="found"></div>
             </div>
         </div>
@@ -44,6 +47,7 @@
         let letters = "";
         let wordsFound = [];
         let score = 0;
+        let timeLeft = 180;
 
         for (let i = 0; i < 16 ; i++) {
             let div = document.createElement('div');
@@ -93,11 +97,19 @@
                     wordsFound.push(letters);
                     document.getElementById("score").innerText = "Scór: " + score;
                     document.getElementById("found").innerText = wordsFound.join(", ");
-                } else alert("Ní focail í '" + letters + "'");
+                } else alert("Ní focal é/í '" + letters + "'");
             } else alert("D'aimsigh tú an focal '" + letters + "' cheana");
             reset();
         }
 
+        function countdown() {
+            timeLeft -= 1;
+            if (timeLeft < 0) {
+                document.getElementById("game").style.display = "none";
+                document.getElementById("time").innerText = "Tá an cluiche thart!"
+            } else document.getElementById("time").innerText = "Am Fágtha: " + timeLeft + "s";
+
+        }
         function isConnected(i) {
             let normalVals = [1,3,4,5];
             let leftSideOOB = [-1, -5, 3];
@@ -108,7 +120,8 @@
             else return normalVals.indexOf(Math.abs(selected - i)) !== -1;
         }
 
-        let charMap = {"a": 69486, "i": 54990, "h": 41582, "c": 34750, "r": 34237, "t": 31328, "e": 27948, "n": 27821, "l": 26597, "s": 25468, "o": 22497, "m": 16642, "d": 13815, "í": 11916, "g": 11219, "á": 10929, "b": 9458, "p": 8366, "ó": 8096, "é": 7614, "f": 7154, "ú": 7093, "u": 6755, "v": 1080, "z": 557, "k": 356, "y": 243, "w": 173, "j": 161, "x": 148, "q": 92};
+        // let charMap = {"a": 69486, "i": 54990, "h": 41582, "c": 34750, "r": 34237, "t": 31328, "e": 27948, "n": 27821, "l": 26597, "s": 25468, "o": 22497, "m": 16642, "d": 13815, "í": 11916, "g": 11219, "á": 10929, "b": 9458, "p": 8366, "ó": 8096, "é": 7614, "f": 7154, "ú": 7093, "u": 6755, "v": 1080, "z": 557, "k": 356, "y": 243, "w": 173, "j": 161, "x": 148, "q": 92};
+        let charMap = {"a": 3, "i": 3, "h": 3, "c": 3, "r": 3, "t": 3, "e": 3, "n": 3,"l": 3,"s": 3,"o": 3,"m": 2,"d": 2,"í": 2,"g": 2,"á": 2,"b": 1,"p": 1,"ó": 1,"é": 1,"f": 1,"ú": 1,"u": 1 };
         let charMapSize = calculateMapSize();
 
         function calculateMapSize() {
@@ -134,6 +147,7 @@
         }
 
         generateBoard();
+        setInterval(() => countdown(), 1000);
     </script>
 </body>
 
