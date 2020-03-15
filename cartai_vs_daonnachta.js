@@ -312,8 +312,6 @@ startGame = function(host){
 };
 
 socketio.on('connection', function (socket) {
-    // ...
-
     socket.on('isOnline', function (user_id) {
         require('user-online.js').register(socket, user_id);
     });
