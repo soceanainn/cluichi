@@ -1,0 +1,111 @@
+
+<head>
+    <title>Éire Aontaithe (Risk)</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+</head>
+<body style = "padding: 5%">
+<div class=" col-xs-12 col-sm-7 col-md-6 col-lg-5" style="text-align: center;">
+    <h2>Éire Aontaithe (Risk)</h2>
+    <canvas id="canvas" style="width: 100%;"></canvas>
+</div>
+
+</body>
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let ratio = 0;
+    if (typeof ctx.filter === "undefined") {
+        alert("Níl an brabhsálaí seo oiriúnach don cluiche seo!")
+    }
+
+    const img = new Image;
+    img.onload = function() {
+        const oc = document.createElement('canvas');
+        const octx = oc.getContext('2d');
+        oc.width = this.width;
+        oc.height = this.height;
+
+        const steps = (oc.width / canvas.width)>>1;
+        octx.filter = `blur(${steps}px)`;
+        octx.drawImage(this, 0, 0);
+
+        ratio = (canvas.width / oc.width);
+        canvas.width = oc.width * ratio;
+        canvas.height = oc.height * ratio;
+        ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
+
+        drawCircles();
+    };
+    img.src = 'client/risk/assets/ireland.svg';
+
+    const leinster = {
+        "kildare": {"x": 1010, "y": 980},
+        "louth": {"x": 1130, "y": 700},
+        "meath": {"x": 1040, "y": 800},
+        "wexford": {"x": 1060, "y": 1300},
+        "westmeath": {"x": 880, "y": 850},
+        "longford": {"x": 790, "y": 770},
+        "offaly": {"x": 790, "y": 980},
+        "laois": {"x": 880, "y": 1060},
+        "kilkenny": {"x": 920, "y": 1250},
+        "wicklow": {"x": 1130, "y": 1060},
+        "carlow": {"x": 1010, "y": 1150},
+        "dublin": {"x": 1150, "y": 910}
+    };
+
+    const munster = {
+        "cork": {"x": 550, "y": 1480},
+        "limerick": {"x": 540, "y": 1260},
+        "clare": {"x": 470, "y": 1130},
+        "tipperary": {"x": 750, "y": 1250},
+        "waterford": {"x": 820, "y": 1400},
+        "kerry": {"x": 360, "y": 1400}
+    };
+
+    const connaught = {
+        "mayo": {"x": 450, "y": 700},
+        "leitrim": {"x": 750, "y": 630},
+        "sligo": {"x": 570, "y": 580},
+        "roscommon": {"x": 650, "y": 725},
+        "galway": {"x": 570, "y": 900}
+    };
+
+    const ulster = {
+        "donegal": {"x": 720, "y": 300},
+        "fermanagh": {"x": 800, "y": 500},
+        "tyrone": {"x": 930, "y": 400},
+        "derry": {"x": 1000, "y": 250},
+        "antrim": {"x": 1165, "y": 300},
+        "down": {"x": 1200, "y": 500},
+        "armagh": {"x": 1070, "y": 530},
+        "monaghan": {"x": 970, "y": 580},
+        "cavan": {"x": 900, "y": 680}
+    }
+
+    function drawCircles(){
+        for (l in leinster) drawCircle(leinster[l].x, leinster[l].y, 1, 'green');
+        for (m in munster) drawCircle(munster[m].x, munster[m].y, 10, 'orange');
+        for (c in connaught) drawCircle(connaught[c].x, connaught[c].y, 3, 'blue');
+        for (u in ulster) drawCircle(ulster[u].x, ulster[u].y, 3, 'grey');
+    }
+
+    function drawCircle(x, y, number, color){
+        ctx.beginPath();
+        ctx.arc(x * ratio, y * ratio, 10, 0, 2 * Math.PI, false);
+        ctx.fillStyle = '#FFF';
+        ctx.fill();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.fillStyle = '#000';
+        if (number < 10) ctx.fillText(number.toString(), (x * ratio) - 2.5, (y * ratio) + 3);
+        else ctx.fillText(number.toString(), (x * ratio) - 5, (y * ratio) + 3);
+        ctx.fill();
+    }
+</script>
+<!-- Bootstrap CDN -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">

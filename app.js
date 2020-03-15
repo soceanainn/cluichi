@@ -18,5 +18,10 @@ app.get('/cartai',function(req, res) {
 app.get('/boggle', function(req, res) {
 	res.sendFile(__dirname + '/client/boggle/index.html')
 });
+
+app.get('/risk', function(req, res) {
+	res.sendFile(__dirname + '/client/risk/index.html')
+});
+
 app.use('/client',express.static(__dirname + '/client'));
 console.log("Server started.");
