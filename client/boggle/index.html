@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="ie">
 <head>
     <title>Boggle</title>
     <meta charset="UTF-8">
@@ -23,25 +25,38 @@
         }
     </style>
 </head>
-<body style="padding: 5%;">
-    <div class="container" style="text-align: center;">
-        <h2>Boggle</h2>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light border-bottom shadow-sm">
+        <a class="navbar-brand" href="/">
+            <img src="/client/assets/images/controller.svg" alt="Controller icon" width="36" height="36" title="Baile"/>
+            Cluichí as Gaeilge
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+            <a class="p-2 btn btn-light active" href="/boggle">Boggle</a>
+            <a class="p-2 btn btn-light disabled" href="#">Éire Aontaithe (Risk)</a>
+            <a class="p-2 btn btn-outline-primary" href="/eolas">Eolas</a>
+        </div>
+    </nav>
+</header>
+<main role="main" class="container">
+        <h2 style="text-align: center;" class="mt-5">Boggle</h2>
         <div id="row0" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
         <div id="row1" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
         <div id="row2" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
         <div id="row3" class="row"><div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div></div>
         <div id="scoreboard" class="row" style="padding-top: 5%;">
-            <div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div>
-            <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2 btn btn-default" onclick="submit()">Iontráil focal</div>
-            <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2 btn btn-default" onclick="reset()">Glan an bord</div>
+            <div class="col-xs-6 col-sm-4 offset-sm-2 col-md-2 offset-md-4 col-lg-2 offset-lg-4 btn btn-outline-success" onclick="submit()">Iontráil focal</div>
+            <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2 btn btn-outline-warning" onclick="reset()">Glan an bord</div>
         </div>
-        <div id="game-over" class="row" style="padding-top: 5%; display: none;">
-            <div class="col-xs-3 col-sm-3 col-md-4 col-lg-4"></div>
-            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4 btn btn-default" onclick="restart()">Imir arís</div>
+        <div id="game-over" class="row justify-content-center" style="padding-top: 5%; display: none;">
+            <div class="col-xs-6 offset-xs-3 col-sm-6 offset-sm-3 col-md-4 offset-md-4 col-lg-4 offset-lg-4 btn btn-primary" onclick="restart()">Imir arís</div>
         </div>
 
         <div class="row">
-            <div class="col-xs-0 col-sm-2 col-md-4 col-lg-4"></div>
             <div class="col-xs-12 col-sm-8 offset-sm-2 col-md-4 offset-md-4 col-lg-4 offset-lg-4">
                 <h3 id="score">Scór: 0</h3>
                 <h3 id="time">Am Fágtha: 180s</h3>
@@ -50,134 +65,147 @@
             </div>
         </div>
     </div>
-    <script>
-        let selected = -1;
-        let letters = "";
-        let wordsFound = [];
-        let score = 0;
-        let timeLeft = 180;
 
-        for (let i = 0; i < 16 ; i++) {
-            let div = document.createElement('div');
-            let content = document.createElement('h3');
-            div.className = "col-xs-3 col-sm-2 col-md-1 col-lg-1 square";
-            div.style.borderRadius = "10%";
-            div.style.border = "2px solid #555";
-            div.id = i.toString();
-            content.innerText = i.toString();
-            div.appendChild(content);
-            document.getElementById("row" + Math.floor(i / 4)).appendChild(div);
-            div.setAttribute("onclick", "select(" + i + ")");
-        }
 
-        function select(i) {
-            if (isConnected(i)) {
-               selected = i;
-               document.getElementById(i.toString()).className += " selected-letter";
-               letters += document.getElementById(i.toString()).children[0].innerText.toString();
-            }
-        }
-
-        function reset(){
-            selected = -1;
-            letters = "";
-            for (let i = 0; i < 16 ; i++) {
-                document.getElementById(i.toString()).className = "col-xs-3 col-sm-2 col-md-1 col-lg-1 square";
-            }
-        }
-
-        function restart(){
-            document.getElementById("scoreboard").style.display = "block";
-            document.getElementById("game-over").style.display = "none";
-            generateBoard();
-            wordsFound = [];
-            score = 0;
-            timeLeft = 180;
-
-            for (let i = 0; i < 16 ; i++) {
-                document.getElementById(i.toString()).setAttribute("onclick", "select(" + i + ")");
-            }
-        }
-
-        function getScore(i) {
-            if (i < 3) return 0;
-            switch(i) {
-                case 3: return 1;
-                case 4: return 2;
-                case 5: return 3;
-                case 6: return 4;
-                case 7: return 5;
-                default: return 6;
-            }
-        }
-
-        function submit(){
-            if (wordsFound.indexOf(letters) === -1) {
-                if (focail.indexOf(letters) !== -1) {
-                    score += getScore(letters.length);
-                    wordsFound.push(letters);
-                    document.getElementById("score").innerText = "Scór: " + score;
-                    document.getElementById("found").innerText = wordsFound.join(", ");
-                } else alert("Ní focal é/í '" + letters + "'");
-            } else alert("D'aimsigh tú an focal '" + letters + "' cheana");
-            reset();
-        }
-
-        function countdown() {
-            timeLeft -= 1;
-            if (timeLeft < 0) {
-                reset();
-                document.getElementById("scoreboard").style.display = "none";
-                document.getElementById("game-over").style.display = "block";
-                document.getElementById("time").innerText = "Tá an cluiche thart!";
-
-                for (let i = 0; i < 16 ; i++) {
-                    document.getElementById(i.toString()).removeAttribute("onclick");
-                }
-            } else document.getElementById("time").innerText = "Am Fágtha: " + timeLeft + "s";
-        }
-
-        function isConnected(i) {
-            let normalVals = [1,3,4,5];
-            let leftSideOOB = [-1, -5, 3];
-            let rightSideOOB = [1, 5, -3];
-            if (selected === -1) return true;
-            else if (i % 4 === 0 && leftSideOOB.indexOf(selected - i) !== -1) return false;
-            else if (i % 4 === 3 && rightSideOOB.indexOf(selected - i) !== -1) return false;
-            else return normalVals.indexOf(Math.abs(selected - i)) !== -1;
-        }
-
-        // let charMap = {"a": 69486, "i": 54990, "h": 41582, "c": 34750, "r": 34237, "t": 31328, "e": 27948, "n": 27821, "l": 26597, "s": 25468, "o": 22497, "m": 16642, "d": 13815, "í": 11916, "g": 11219, "á": 10929, "b": 9458, "p": 8366, "ó": 8096, "é": 7614, "f": 7154, "ú": 7093, "u": 6755, "v": 1080, "z": 557, "k": 356, "y": 243, "w": 173, "j": 161, "x": 148, "q": 92};
-        let charMap = {"a": 3, "i": 3, "h": 3, "c": 3, "r": 3, "t": 3, "e": 3, "n": 3,"l": 3,"s": 3,"o": 3,"m": 2,"d": 2,"í": 2,"g": 2,"á": 2,"b": 1,"p": 1,"ó": 1,"é": 1,"f": 1,"ú": 1,"u": 1 };
-        let charMapSize = calculateMapSize();
-
-        function calculateMapSize() {
-            let x = 0;
-            for (k in charMap) x += charMap[k];
-            return x;
-        }
-
-        function generateBoard() {
-            for (let i = 0; i < 16 ; i++) {
-                document.getElementById(i.toString()).children[0].innerText = getChar();
-            }
-        }
-
-        function getChar() {
-            let rand = Math.floor(Math.random() * charMapSize);
-            for (k in charMap) {
-                if (rand <= charMap[k]) return k;
-                else rand -= charMap[k];
-            }
-            return "a";
-        }
-
-        generateBoard();
-        setInterval(() => countdown(), 1000);
-    </script>
+</main>
+<footer class="footer" style="text-align: center;">
+    <span class="text-muted">Cruthaithe ag: <a class="text-dark" href="mailto: seamusoceanainn@gmail.com">
+        <img src="/client/assets/images/envelope.svg" alt="Email icon" width="16" height="16" title="Seol ríomhphost"/>
+        Séamus Ó Ceanainn
+    </a></span>
+</footer>
 </body>
 
-<!-- Bootstrap CDN -->
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script>
+    let selected = -1;
+    let letters = "";
+    let wordsFound = [];
+    let score = 0;
+    let timeLeft = 180;
+
+    for (let i = 0; i < 16 ; i++) {
+        let div = document.createElement('div');
+        let content = document.createElement('h3');
+        div.className = "col-xs-3 col-sm-2 col-md-1 col-lg-1 square";
+        div.style.borderRadius = "10%";
+        div.style.border = "2px solid #555";
+        div.id = i.toString();
+        content.innerText = i.toString();
+        div.appendChild(content);
+        document.getElementById("row" + Math.floor(i / 4)).appendChild(div);
+        div.setAttribute("onclick", "select(" + i + ")");
+    }
+
+    function select(i) {
+        if (isConnected(i)) {
+            selected = i;
+            document.getElementById(i.toString()).className += " selected-letter";
+            letters += document.getElementById(i.toString()).children[0].innerText.toString();
+        }
+    }
+
+    function reset(){
+        selected = -1;
+        letters = "";
+        for (let i = 0; i < 16 ; i++) {
+            document.getElementById(i.toString()).className = "col-xs-3 col-sm-2 col-md-1 col-lg-1 square";
+        }
+    }
+
+    function restart(){
+        document.getElementById("scoreboard").style.display = "block";
+        document.getElementById("game-over").style.display = "none";
+        generateBoard();
+        wordsFound = [];
+        score = 0;
+        timeLeft = 180;
+
+        for (let i = 0; i < 16 ; i++) {
+            document.getElementById(i.toString()).setAttribute("onclick", "select(" + i + ")");
+        }
+    }
+
+    function getScore(i) {
+        if (i < 3) return 0;
+        switch(i) {
+            case 3: return 1;
+            case 4: return 2;
+            case 5: return 3;
+            case 6: return 4;
+            case 7: return 5;
+            default: return 6;
+        }
+    }
+
+    function submit(){
+        if (wordsFound.indexOf(letters) === -1) {
+            if (focail.indexOf(letters) !== -1) {
+                score += getScore(letters.length);
+                wordsFound.push(letters);
+                document.getElementById("score").innerText = "Scór: " + score;
+                document.getElementById("found").innerText = wordsFound.join(", ");
+            } else alert("Ní focal é/í '" + letters + "'");
+        } else alert("D'aimsigh tú an focal '" + letters + "' cheana");
+        reset();
+    }
+
+    function countdown() {
+        timeLeft -= 1;
+        if (timeLeft < 0) {
+            reset();
+            document.getElementById("scoreboard").style.display = "none";
+            document.getElementById("game-over").style.display = "block";
+            document.getElementById("time").innerText = "Tá an cluiche thart!";
+
+            for (let i = 0; i < 16 ; i++) {
+                document.getElementById(i.toString()).removeAttribute("onclick");
+            }
+        } else document.getElementById("time").innerText = "Am Fágtha: " + timeLeft + "s";
+    }
+
+    function isConnected(i) {
+        let normalVals = [1,3,4,5];
+        let leftSideOOB = [-1, -5, 3];
+        let rightSideOOB = [1, 5, -3];
+        if (selected === -1) return true;
+        else if (i % 4 === 0 && leftSideOOB.indexOf(selected - i) !== -1) return false;
+        else if (i % 4 === 3 && rightSideOOB.indexOf(selected - i) !== -1) return false;
+        else return normalVals.indexOf(Math.abs(selected - i)) !== -1;
+    }
+
+    // let charMap = {"a": 69486, "i": 54990, "h": 41582, "c": 34750, "r": 34237, "t": 31328, "e": 27948, "n": 27821, "l": 26597, "s": 25468, "o": 22497, "m": 16642, "d": 13815, "í": 11916, "g": 11219, "á": 10929, "b": 9458, "p": 8366, "ó": 8096, "é": 7614, "f": 7154, "ú": 7093, "u": 6755, "v": 1080, "z": 557, "k": 356, "y": 243, "w": 173, "j": 161, "x": 148, "q": 92};
+    let charMap = {"a": 3, "i": 3, "h": 3, "c": 3, "r": 3, "t": 3, "e": 3, "n": 3,"l": 3,"s": 3,"o": 3,"m": 2,"d": 2,"í": 2,"g": 2,"á": 2,"b": 1,"p": 1,"ó": 1,"é": 1,"f": 1,"ú": 1,"u": 1 };
+    let charMapSize = calculateMapSize();
+
+    function calculateMapSize() {
+        let x = 0;
+        for (k in charMap) x += charMap[k];
+        return x;
+    }
+
+    function generateBoard() {
+        for (let i = 0; i < 16 ; i++) {
+            document.getElementById(i.toString()).children[0].innerText = getChar();
+        }
+    }
+
+    function getChar() {
+        let rand = Math.floor(Math.random() * charMapSize);
+        for (k in charMap) {
+            if (rand <= charMap[k]) return k;
+            else rand -= charMap[k];
+        }
+        return "a";
+    }
+
+    generateBoard();
+    setInterval(() => countdown(), 1000);
+</script>
+
+<link href="/client/assets/custom-styling.css" rel="stylesheet">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
 <script src="/client/boggle/assets/focal.txt"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+</html>
