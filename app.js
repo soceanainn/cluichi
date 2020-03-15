@@ -23,5 +23,9 @@ app.get('/risk', function(req, res) {
 	res.sendFile(__dirname + '/client/risk/index.html')
 });
 
+app.get('/eolas', function(req, res) {
+	res.sendFile(__dirname + '/client/about-me.html')
+});
+
 app.use('/client',express.static(__dirname + '/client'));
 console.log("Server started.");
