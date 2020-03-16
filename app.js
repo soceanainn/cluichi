@@ -24,7 +24,7 @@ app.get('/risk', function(req, res) {
 });
 
 app.get('/eolas', function(req, res) {
-	res.sendFile(__dirname + '/client/about-me.html')
+	res.sendFile(__dirname + '/client/about.html')
 });
 
 app.use('/client',express.static(__dirname + '/client'));
