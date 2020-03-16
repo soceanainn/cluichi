@@ -32,4 +32,5 @@ app.get('/sitemap.xml', function(req, res) {
 });
 
 app.use('/client',express.static(__dirname + '/client'));
+app.use('/scealta',express.static(__dirname + '/scealta'));
 console.log("Server started.");
