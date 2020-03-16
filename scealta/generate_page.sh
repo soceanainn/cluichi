@@ -75,7 +75,7 @@ cat << EOF > $3/index.html
            <h3 id="teideal" style="text-align: center"></h3>
            <p id="teacs" style="text-align: justify"></p>
        </div>
-       <div class="mt-3 row" id="choices"></div>
+       <div class="mt-3" id="choices"></div>
    </div>
 </main>
 <footer class="footer" style="text-align: center;">
@@ -117,13 +117,16 @@ cat << EOF > $3/index.html
    }
 
    function renderChoices(choices, offset){
+       let row = document.createElement('div');
+       row.className = "row";
+       document.getElementById('choices').append(row);
        for (const c in choices) {
            let div = document.createElement('div');
            div.className = "col-12 col-sm-6 p-2 btn btn-outline-primary";
            if (c === "" + (choices.length - 1)) div.className += " " + offset;
            div.innerText = choices[c].text;
            div.setAttribute("onclick", "displayParagraph(" + choices[c].goto + ")");
-           document.getElementById('choices').append(div);
+           row.append(div);
        }
    }
 
