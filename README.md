@@ -2,6 +2,8 @@
 
 To start locally run `node app.js` and visit: `localhost:2000`
 
+To update sitemap run `node sitemap_generator.js`
+
 Games List: (for more details see README in `client/{game}`)
 * [BROKEN] CartaiVsDaonnachta (Cards Against Humanity)
 * Boggle

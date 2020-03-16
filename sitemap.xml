@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://cluichi.herokuapp.com/</loc>
+  </url>
+  <url>
+    <loc>https://cluichi.herokuapp.com/boggle</loc>
+  </url>
+  <url>
+    <loc>https://cluichi.herokuapp.com/eolas</loc>
+  </url>
+</urlset>
