@@ -19,3 +19,14 @@ body > .container {
     padding-top: 80px;
     min-height: calc(100vh - 60px);
 }
+
+.flex-column img {
+    width: 80%;
+    margin: auto 10% 10%;
+    border: 1px solid #ccc !important;
+    align-self: flex-end;
+}
+
+.flex-column {
+    text-align: justify;
+}
