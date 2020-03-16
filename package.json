@@ -5,12 +5,12 @@
   "main": "app.js",
   "dependencies": {
     "express": "^4.14.1",
+    "sitemap-generator": "^8.4.2",
     "socket.io": "^1.7.2"
   },
   "devDependencies": {},
-  "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node sitemap_generator.js && node app.js"
   },
   "author": "",
   "license": "ISC"

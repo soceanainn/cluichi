@@ -27,5 +27,9 @@ app.get('/eolas', function(req, res) {
 	res.sendFile(__dirname + '/client/about.html')
 });
 
+app.get('/sitemap.xml', function(req, res) {
+	res.sendFile(__dirname + '/sitemap.xml')
+});
+
 app.use('/client',express.static(__dirname + '/client'));
 console.log("Server started.");
