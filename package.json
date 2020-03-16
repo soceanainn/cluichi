@@ -10,7 +10,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node sitemap_generator.js && node app.js"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC"
