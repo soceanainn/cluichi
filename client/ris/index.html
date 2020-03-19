@@ -18,6 +18,7 @@
 
         gtag('config', 'UA-160761764-1');
     </script>
+    <script src="/client/ris/assets/focail.js"></script>
 </head>
 <body>
 <header>
@@ -31,7 +32,9 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
             <a class="p-2 ml-2 btn btn-light" href="/boggle">Boggle</a>
-            <a class="p-2 ml-2 btn btn-light disabled" href="#">Éire Aontaithe (Risk)</a>
+            <a class="p-2 ml-2 btn btn-light" href="/ris">Rís</a>
+            <a class="p-2 ml-2 btn btn-light disabled" href="/risk">Éire Aontaithe (Risk)</a>
+            <a class="p-2 ml-2 btn btn-light disabled" href="/scealta">Scéalta</a>
             <a class="p-2 ml-2 btn btn-outline-primary" href="/eolas">Eolas</a>
         </div>
     </nav>
@@ -50,25 +53,38 @@
             <h3>Leibhéal: <span id="level"></span></h3>
             <h3>Stríoc: <span id="score">0</span></h3>
             <h3>Stríoc is airde: <span id="high-score">0</span></h3>
+            <h5 class="mt-5">Focal Deireanach: <span id="prev"></span></h5>
+            <h5>Focail chosúla:</h5>
+            <div id="similar" class="pb-5" style="text-align: center">
         </div>
     </div>
 </main>
 <footer class="footer" style="text-align: center;">
-    <span class="text-muted">Cruthaithe ag: <a target="_blank" class="text-dark" href="mailto: seamusoceanainn@gmail.com">
-        <img src="/client/assets/images/envelope.svg" alt="Email icon" width="16" height="16" title="Seol ríomhphost"/>
+    <span class="text-muted">Cruthaithe ag: <a class="text-dark" target="_blank" href="https://soceanainn.com">
         Séamus Ó Ceanainn
     </a></span>
 </footer>
 </body>
-
-<script src="/client/ris/assets/focail.js"></script>
 <script>
-    let level = 0;
-    let curr_steak = 0;
-    let highest_streak = 0;
-    let levelStreak = 0;
+    let level= parseInt(getItem('level', '0'));
+    let curr_steak = parseInt(getItem('current-streak', '0'));
+    let highest_streak = parseInt(getItem('highest-streak', '0'));
+    let levelStreak = parseInt(getItem('level-streak', '0'));
+
+    let pause = true;
+
+    function getItem(item, def){
+        let temp = sessionStorage.getItem(item);
+        if (temp === null) return def;
+        else return temp;
+    }
+
+    function setItem(item, val){
+        sessionStorage.setItem(item, val);
+    }
+
     let correct = 0;
-    let currentWord = 0;
+    let currentWord = -1;
     const maxLevel = 10;
 
     const wordLength = focail.length;
@@ -80,10 +96,13 @@
     words[maxLevel] = focail.slice((maxLevel-1) * groupSize);
 
     function newRound(){
-        let alternatives = [];
-        for (let i = 0; i < 3; i++) alternatives[i] = getRandomWord(false)[1];
-
         let word = getRandomWord(true);
+        let alternatives = [];
+        for (let i = 0; i < 3; i++) {
+            let temp = getRandomWord(false)[1];
+            while (temp === word) temp = getRandomWord(false)[1];
+            alternatives[i] = temp;
+        }
         document.getElementById('focal').innerText = word[0];
         correct = Math.floor(Math.random() * 3.99);
         for (let i = 0; i < 4; i++){
@@ -92,6 +111,7 @@
             if (i === correct) choice.innerText = word[1];
             else choice.innerText = alternatives.pop()
         }
+        pause=false;
     }
 
     function getRandomWord(selected) {
@@ -110,14 +130,17 @@
 
     function incrementStreak(){
         curr_steak += 1;
+        setItem('current-streak', curr_steak);
         if (curr_steak > highest_streak) {
             highest_streak = curr_steak;
+            setItem('highest-streak', highest_streak);
         }
         drawStreak();
     }
 
     function resetStreak(){
         curr_steak = 0;
+        setItem('current-streak', curr_steak);
         drawStreak();
     }
 
@@ -130,7 +153,12 @@
         if (levelStreak > -1) levelStreak = -1;
         else levelStreak--;
 
-        if (levelStreak <= -3 && level > 0) level--;
+        if (levelStreak <= -3 && level > 0){
+            level--;
+            levelStreak=0;
+            updateLevel();
+        }
+        setItem('level-streak', levelStreak);
         resetStreak();
     }
 
@@ -138,25 +166,43 @@
         if (levelStreak < 1) levelStreak = 1;
         else levelStreak++;
 
-        if (levelStreak >= 5 && level < maxLevel) level++;
+        if (levelStreak >= 5 && level < maxLevel) {
+            level++;
+            levelStreak=0;
+            updateLevel();
+        }
+        setItem('level-streak', levelStreak);
         incrementStreak();
     }
+
     function select(i){
-        if (words[level][currentWord].similar.indexOf(document.getElementById('choice' + i).innerText) === -1) {
-            document.getElementById('choice' + i).className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-danger btn-block";
-            document.getElementById('choice' + correct).className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-success btn-block";
-            incorrectAnswer();
-        } else {
-            document.getElementById('choice' + i).className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-success btn-block";
-            correctAnswer();
+        if (pause !== true) {
+            pause = true;
+            document.getElementById("prev").innerHTML =
+                '<a class="btn btn-outline-dark" target="_blank" href="https://www.teanglann.ie/ga/fgb/' + encodeURI(words[level][currentWord].word) + '">' +
+                words[level][currentWord].word + '</a> ';
+
+            document.getElementById("similar").innerHTML = "";
+            for (let s in words[level][currentWord].similar) {
+                document.getElementById("similar").innerHTML +=
+                    '<a class="btn btn-outline-dark" target="_blank" href="https://www.teanglann.ie/ga/fgb/' + encodeURI(words[level][currentWord].similar[s]) + '">' + words[level][currentWord].similar[s] + '</a> ';
+            }
+
+            if (words[level][currentWord].similar.indexOf(document.getElementById('choice' + i).innerText) === -1) {
+                document.getElementById('choice' + i).className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-danger btn-block";
+                document.getElementById('choice' + correct).className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-success btn-block";
+                incorrectAnswer();
+            } else {
+                document.getElementById('choice' + i).className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-success btn-block";
+                correctAnswer();
+            }
+            setTimeout(newRound, 1000);
         }
-        setTimeout(newRound, 1000);
     }
 
-    newRound();
     updateLevel();
     drawStreak();
-
+    newRound();
 </script>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
