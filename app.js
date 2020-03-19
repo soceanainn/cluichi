@@ -23,6 +23,10 @@ app.get('/risk', function(req, res) {
 	res.sendFile(__dirname + '/client/risk/index.html')
 });
 
+app.get('/ris', function(req, res) {
+	res.sendFile(__dirname + '/client/ris/index.html')
+});
+
 app.get('/eolas', function(req, res) {
 	res.sendFile(__dirname + '/client/about.html')
 });
