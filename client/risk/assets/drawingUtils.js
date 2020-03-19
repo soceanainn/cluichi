@@ -36,3 +36,13 @@ function drawTroopNumbers(number, x, y) {
         ctx.fill();
     }
 }
+
+function drawHarbours() {
+    let harbour = new Image();
+    harbour.src = '/client/risk/assets/harbor.svg';
+    harbour.onload = function() {
+        for (let h in harbours) {
+            ctx.drawImage(harbour, harbours[h].x * ratio, harbours[h].y * ratio, 75 * ratio, 75 * ratio);
+        }
+    };
+}

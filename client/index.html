@@ -24,30 +24,61 @@
         <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light border-bottom shadow-sm">
             <a class="navbar-brand" href="/">
                 <img src="/client/assets/images/controller.svg" alt="Controller icon" width="36" height="36" title="Baile"/>
-                Cluichí as Gaeilge
+                Cluichi.ie
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
                 <a class="p-2 ml-2 btn btn-light" href="/boggle">Boggle</a>
-                <a class="p-2 ml-2 btn btn-light disabled" href="#">Éire Aontaithe (Risk)</a>
+                <a class="p-2 ml-2 btn btn-light" href="/ris">Rís</a>
+                <a class="p-2 ml-2 btn btn-light disabled" href="/risk">Éire Aontaithe (Risk)</a>
+                <a class="p-2 ml-2 btn btn-light disabled" href="/scealta">Scéalta</a>
                 <a class="p-2 ml-2 btn btn-outline-primary" href="/eolas">Eolas</a>
             </div>
         </nav>
     </header>
     <main role="main" class="container">
-        <h2 style="text-align: center;">Roghnaigh do Scéal Féin!</h2>
+        <h2 style="text-align: center;">Cluichí as Gaeilge!</h2>
         <div class="row mt-5">
             <div class="col-12 col-sm-12 col-md-4 offset-md-1 col-lg-4 offset-md-1 d-flex flex-column">
                 <a href="/boggle" class="btn btn-outline-primary btn-block">Boggle</a>
-                Is cluiche clasaiceach é 'Boggle' atá thart le breis is 45 bliain anuas. Cluiche thar a bheith dúshlánach
-                é agus tú ag imirt trí Ghaeilge! Tá 3 nóiméad agat an méid is mó focail a aimsiú ar an mbord imeartha,
-                le pointí do gach focal le níos mó ná 3 litreacha.
+                <p>
+                    Is cluiche clasaiceach é 'Boggle' atá thart le breis is 45 bliain anuas. Cluiche thar a bheith dúshlánach
+                    é agus tú ag imirt trí Ghaeilge! Tá 3 nóiméad agat an méid is mó focail a aimsiú ar an mbord imeartha,
+                    le pointí do gach focal le 3 litreacha nó níos mó.
+                </p>
+                <p>
+                    Tá an cluiche seo deartha ag úsáid foinsí ó <a href="https://www.tearma.ie/ioslodail/" target="_blank">
+                    tearma.ie</a>.
+                </p>
                 <img src="/client/boggle/boggle.png" alt="Cluiche 'Boggle'"/>
             </div>
             <div class="col-12 col-sm-12 col-md-4 offset-md-2 col-lg-4 offset-md-2 d-flex flex-column">
-                <a href="/boggle" class="btn btn-outline-success btn-block disabled">Ag teacht go luath - 'Risk'</a>
+                <a href="/ris" class="btn btn-outline-danger btn-block ">Rís</a>
+                <p>
+                    Is cluiche tógáil foclóir é 'Rís' atá bunaithe ar <a href="https://freerice.com/" target="_blank">freerice.com</a>.
+                    Taispeántar focal amháin agus tugtar ceithre rogha duit, caithfidh tú an rogha is cosúil leis an bhfocal
+                    a roghnú.
+                </p>
+                <p>
+                    Tá an cluiche seo deartha ag úsáid foinsí ó <a href="https://cadhan.com/lsg/" target="_blank">
+                    cadhan.com</a>.
+                </p>
+                <img src="/client/ris/ris.png" alt="Cluiche 'Rís'"/>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12 col-md-4 offset-md-1 d-flex flex-column">
+                <a href="/ris" class="btn btn-outline-info btn-block disabled ">Ag teacht go luath - 'Scéalta'</a>
+                <p>Scéalta idirghníomhacha atá i gceist - ar nós na leabhair 'Choose Your Own Adventure' mar a bhí ann sna
+                nóchaidí. Má tá suim agat do scéal fhéin a scríobh don suíomh, lean an <a
+                    href="https://docs.google.com/spreadsheets/u/2/d/1kI4no4LtVmlcHaNRlRiEgLigJjdLHyjBodn8MEr5N6g/edit#gid=407739815"
+                    target="_blank">nasc seo</a>.</p>
+                <img src="/client/assets/scealta.png" style="width: 100%;  margin: auto;" alt="Feidhmchlár 'Scéalta'"/>
+            </div>
+            <div class="col-12 col-md-4 offset-md-2 d-flex flex-column">
+                <a href="/risk" class="btn btn-outline-success btn-block disabled">Ag teacht go luath - 'Risk'</a>
                 Is cluiche straitéiseach é 'Risk' atá ar fáil in an-chuid leagan timpeall an domhain. Táim ag obair ar
                 leagan Gaelach faoi láthair - bunaithe ar léarscáil na hÉireann.
                 <img src="/client/risk/risk.png" alt="Cluiche 'Risk'"/>
@@ -55,8 +86,7 @@
         </div>
     </main>
     <footer class="footer" style="text-align: center;">
-        <span class="text-muted">Cruthaithe ag: <a class="text-dark" target="_blank" href="mailto: seamusoceanainn@gmail.com">
-            <img src="/client/assets/images/envelope.svg" alt="Email icon" width="16" height="16" title="Seol ríomhphost"/>
+        <span class="text-muted">Cruthaithe ag: <a class="text-dark" target="_blank" href="https://soceanainn.com">
             Séamus Ó Ceanainn
         </a></span>
     </footer>

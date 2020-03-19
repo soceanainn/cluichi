@@ -62,8 +62,9 @@ cat << EOF > $3/index.html
        </button>
        <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
            <a class="p-2 ml-2 btn btn-light" href="/boggle">Boggle</a>
-           <a class="p-2 ml-2 btn btn-light disabled" href="#">Éire Aontaithe (Risk)</a>
-           <a class="p-2 ml-2 btn btn-light active" href="/scealta">Roghnaigh do Scéal</a>
+           <a class="p-2 ml-2 btn btn-light" href="/ris">Rís</a>
+           <a class="p-2 ml-2 btn btn-light disabled" href="/risk">Éire Aontaithe (Risk)</a>
+           <a class="p-2 ml-2 btn btn-light active" href="/scealta">Scéalta</a>
            <a class="p-2 ml-2 btn btn-outline-primary" href="/eolas">Eolas</a>
        </div>
    </nav>
@@ -79,8 +80,7 @@ cat << EOF > $3/index.html
    </div>
 </main>
 <footer class="footer" style="text-align: center;">
-       <span class="text-muted">Suíomh cruthaithe ag: <a class="text-dark" target="_blank" href="mailto: seamusoceanainn@gmail.com">
-           <img src="/client/assets/images/envelope.svg" alt="Email icon" width="16" height="16" title="Seol ríomhphost"/>
+       <span class="text-muted">Suíomh cruthaithe ag: <a class="text-dark" target="_blank" href="https://soceanainn.com">
            Séamus Ó Ceanainn
        </a></span>
 </footer>

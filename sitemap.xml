@@ -7,6 +7,15 @@
     <loc>https://cluichi.herokuapp.com/boggle</loc>
   </url>
   <url>
+    <loc>https://cluichi.herokuapp.com/ris</loc>
+  </url>
+  <url>
+    <loc>https://cluichi.herokuapp.com/risk</loc>
+  </url>
+  <url>
+    <loc>https://cluichi.herokuapp.com/sceal</loc>
+  </url>
+  <url>
     <loc>https://cluichi.herokuapp.com/eolas</loc>
   </url>
 </urlset>
