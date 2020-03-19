@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ie">
+<head>
+    <title>Rís</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+    <link href="/client/assets/custom-styling.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style></style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160761764-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-160761764-1');
+    </script>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light border-bottom shadow-sm">
+        <a class="navbar-brand" href="/">
+            <img src="/client/assets/images/controller.svg" alt="Controller icon" width="36" height="36" title="Baile"/>
+            Cluichi.ie
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+            <a class="p-2 ml-2 btn btn-light" href="/boggle">Boggle</a>
+            <a class="p-2 ml-2 btn btn-light disabled" href="#">Éire Aontaithe (Risk)</a>
+            <a class="p-2 ml-2 btn btn-outline-primary" href="/eolas">Eolas</a>
+        </div>
+    </nav>
+</header>
+<main role="main" class="container">
+    <h2 style="text-align: center;" class="mt-5">Rís</h2>
+
+    <h4 style="text-align: center;" class="mt-5">Tá '<span id="focal">focal</span>' cosúil le:</h4>
+    <div class="row"><div class=" col-12 col-sm-12 col-md-4 offset-md-4 btn btn-outline-primary btn-block" id="choice0" onclick="select(0)"></div></div>
+    <div class="row"><div class=" col-12 col-sm-12 col-md-4 offset-md-4 btn btn-outline-primary btn-block" id="choice1" onclick="select(1)"></div></div>
+    <div class="row"><div class=" col-12 col-sm-12 col-md-4 offset-md-4 btn btn-outline-primary btn-block" id="choice2" onclick="select(2)"></div></div>
+    <div class="row"><div class=" col-12 col-sm-12 col-md-4 offset-md-4 btn btn-outline-primary btn-block" id="choice3" onclick="select(3)"></div></div>
+
+    <div class="row">
+        <div class="col-12 col-sm-8 offset-sm-2 col-md-4 offset-md-4 col-lg-4 offset-lg-4 mt-5">
+            <h3>Leibhéal: <span id="level"></span></h3>
+            <h3>Stríoc: <span id="score">0</span></h3>
+            <h3>Stríoc is airde: <span id="high-score">0</span></h3>
+        </div>
+    </div>
+</main>
+<footer class="footer" style="text-align: center;">
+    <span class="text-muted">Cruthaithe ag: <a target="_blank" class="text-dark" href="mailto: seamusoceanainn@gmail.com">
+        <img src="/client/assets/images/envelope.svg" alt="Email icon" width="16" height="16" title="Seol ríomhphost"/>
+        Séamus Ó Ceanainn
+    </a></span>
+</footer>
+</body>
+
+<script src="/client/ris/assets/focail.js"></script>
+<script>
+    let level = 0;
+    let curr_steak = 0;
+    let highest_streak = 0;
+    let levelStreak = 0;
+    let correct = 0;
+    let currentWord = 0;
+    const maxLevel = 10;
+
+    const wordLength = focail.length;
+    const words = [];
+    const groupSize = Math.floor(wordLength / maxLevel);
+    for (let i = level; i < maxLevel; i++){
+        words[i] = focail.slice(i * groupSize, (i + 1) * groupSize)
+    }
+    words[maxLevel] = focail.slice((maxLevel-1) * groupSize);
+
+    function newRound(){
+        let alternatives = [];
+        for (let i = 0; i < 3; i++) alternatives[i] = getRandomWord(false)[1];
+
+        let word = getRandomWord(true);
+        document.getElementById('focal').innerText = word[0];
+        correct = Math.floor(Math.random() * 3.99);
+        for (let i = 0; i < 4; i++){
+            let choice = document.getElementById('choice' + i);
+            choice.className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-outline-primary btn-block";
+            if (i === correct) choice.innerText = word[1];
+            else choice.innerText = alternatives.pop()
+        }
+    }
+
+    function getRandomWord(selected) {
+        let group = words[level];
+        let word = Math.floor(Math.random() * (group.length-0.1));
+        if (selected) currentWord = word;
+
+        let selectedWord = group[word];
+        let similar = selectedWord.similar[Math.floor(Math.random() * (selectedWord.similar.length-0.1))];
+        return ([selectedWord.word, similar]);
+    }
+
+    function updateLevel(){
+        document.getElementById('level').innerText = level;
+    }
+
+    function incrementStreak(){
+        curr_steak += 1;
+        if (curr_steak > highest_streak) {
+            highest_streak = curr_steak;
+        }
+        drawStreak();
+    }
+
+    function resetStreak(){
+        curr_steak = 0;
+        drawStreak();
+    }
+
+    function drawStreak(){
+        document.getElementById('score').innerText = curr_steak;
+        document.getElementById('high-score').innerText = highest_streak;
+    }
+
+    function incorrectAnswer(){
+        if (levelStreak > -1) levelStreak = -1;
+        else levelStreak--;
+
+        if (levelStreak <= -3 && level > 0) level--;
+        resetStreak();
+    }
+
+    function correctAnswer(){
+        if (levelStreak < 1) levelStreak = 1;
+        else levelStreak++;
+
+        if (levelStreak >= 5 && level < maxLevel) level++;
+        incrementStreak();
+    }
+    function select(i){
+        if (words[level][currentWord].similar.indexOf(document.getElementById('choice' + i).innerText) === -1) {
+            document.getElementById('choice' + i).className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-danger btn-block";
+            document.getElementById('choice' + correct).className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-success btn-block";
+            incorrectAnswer();
+        } else {
+            document.getElementById('choice' + i).className = "col-12 col-sm-12 col-md-4 offset-md-4 btn btn-success btn-block";
+            correctAnswer();
+        }
+        setTimeout(newRound, 1000);
+    }
+
+    newRound();
+    updateLevel();
+    drawStreak();
+
+</script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+</html>
