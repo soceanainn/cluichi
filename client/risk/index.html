@@ -23,14 +23,16 @@
     <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light border-bottom shadow-sm">
         <a class="navbar-brand" href="/">
             <img src="/client/assets/images/controller.svg" alt="Controller icon" width="36" height="36" title="Baile"/>
-            Cluichí as Gaeilge
+            Cluichi.ie
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
             <a class="p-2 ml-2 btn btn-light" href="/boggle">Boggle</a>
-            <a class="p-2 ml-2 btn btn-light active" href="#">Éire Aontaithe (Risk)</a>
+            <a class="p-2 ml-2 btn btn-light" href="/ris">Rís</a>
+            <a class="p-2 ml-2 btn btn-light active" href="/risk">Éire Aontaithe (Risk)</a>
+            <a class="p-2 ml-2 btn btn-light disabled" href="/scealta">Scéalta</a>
             <a class="p-2 ml-2 btn btn-outline-primary" href="/eolas">Eolas</a>
         </div>
     </nav>
@@ -45,8 +47,7 @@
 </main>
 <footer class="footer" style="text-align: center;">
         <span class="text-muted">Cruthaithe ag:
-            <a class="text-dark" href="mailto: seamusoceanainn@gmail.com">
-                <img src="/client/assets/images/envelope.svg" alt="Email icon" width="16" height="16" title="Seol ríomhphost"/>
+           <a class="text-dark" target="_blank" href="https://soceanainn.com">
                 Séamus Ó Ceanainn
             </a>
         </span>
@@ -81,6 +82,7 @@
         ctx.drawImage(oc, 0, 0, oc.width, oc.height, 0, 0, canvas.width, canvas.height);
 
         drawCircles();
+        drawHarbours();
     };
     img.src = 'client/risk/assets/ireland.svg';
 </script>
