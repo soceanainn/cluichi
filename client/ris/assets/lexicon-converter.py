@@ -48,4 +48,4 @@ print("TEST 'ar': " + str(output['ar']))
 print("WORDS: " + str(len(output)))
 
 with open('focail.js', 'w+') as fd:
-    fd.write('const focail = ' + json.dumps(output, indent=4, separators=(',', ': '), ensure_ascii=False) + ';\n')
+    fd.write('const focail = ' + json.dumps(list(map(lambda x: {'word': x[0], 'similar': x[1]},output.items())), indent=4, ensure_ascii=False) + ';\n')
