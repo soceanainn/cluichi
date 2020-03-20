@@ -13,9 +13,12 @@
     <loc>https://cluichi.herokuapp.com/risk</loc>
   </url>
   <url>
-    <loc>https://cluichi.herokuapp.com/sceal</loc>
+    <loc>https://cluichi.herokuapp.com/eolas</loc>
   </url>
   <url>
-    <loc>https://cluichi.herokuapp.com/eolas</loc>
+    <loc>https://cluichi.herokuapp.com/scealta/</loc>
+  </url>
+  <url>
+    <loc>https://cluichi.herokuapp.com/scealta/oisin/</loc>
   </url>
 </urlset>

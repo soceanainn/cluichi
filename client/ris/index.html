@@ -66,7 +66,7 @@
 </footer>
 </body>
 <script>
-    let level= parseInt(getItem('level', '0'));
+    let level= parseInt(getItem('level', '1'));
     let curr_steak = parseInt(getItem('current-streak', '0'));
     let highest_streak = parseInt(getItem('highest-streak', '0'));
     let levelStreak = parseInt(getItem('level-streak', '0'));
@@ -153,7 +153,7 @@
         if (levelStreak > -1) levelStreak = -1;
         else levelStreak--;
 
-        if (levelStreak <= -3 && level > 0){
+        if (levelStreak <= -3 && level > 1){
             level--;
             levelStreak=0;
             updateLevel();
