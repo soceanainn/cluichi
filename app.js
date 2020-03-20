@@ -37,4 +37,9 @@ app.get('/sitemap.xml', function(req, res) {
 
 app.use('/client',express.static(__dirname + '/client'));
 app.use('/scealta',express.static(__dirname + '/scealta'));
+
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function(req, res){
+	res.status(404).sendFile(__dirname + '/client/not-found.html');
+});
 console.log("Server started.");
