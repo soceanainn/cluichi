@@ -1,4 +1,4 @@
-//-------------------0--------------------------
+//----------------------------------------------
 // 			Set Up Express and Server
 //----------------------------------------------
 let express = require('express');
@@ -38,8 +38,21 @@ app.get('/sitemap.xml', function(req, res) {
 app.use('/client',express.static(__dirname + '/client'));
 app.use('/scealta',express.static(__dirname + '/scealta'));
 
+const lsg = require('./lsg/lsg.js');
+app.get('/api/lsg/:id', function(req, res){
+	let depth = 1;
+	if(req.query.depth !== null) depth = req.query.depth;
+	if (depth > 3) depth = 3;
+	else if (depth < 1) depth = 1;
+	res.setHeader('Content-Type', 'application/json');
+	res.setHeader('Access-Control-Allow-Origin', 'https://soceanainn.com');
+	res.setHeader('Access-Control-Allow-Origin', 'http://soceanainn.com');
+	res.status(200).json(lsg.fetchGraph(req.params.id, depth));
+});
+
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function(req, res){
 	res.status(404).sendFile(__dirname + '/client/not-found.html');
 });
+
 console.log("Server started.");
