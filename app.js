@@ -1,4 +1,5 @@
-//-------------------0--------------------------
+import { fetchGraph } from '/lsg/lsg.mjs';
+//----------------------------------------------
 // 			Set Up Express and Server
 //----------------------------------------------
 let express = require('express');
@@ -38,8 +39,17 @@ app.get('/sitemap.xml', function(req, res) {
 app.use('/client',express.static(__dirname + '/client'));
 app.use('/scealta',express.static(__dirname + '/scealta'));
 
+app.get('/api/lsg/:id', function(req, res){
+	let depth = 0;
+	if(req.query.depth !== null) depth = req.query.depth;
+	if (depth > 5) depth = 5;
+	res.status(200).send(fetchGraph(req.params.id, depth))
+});
+
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function(req, res){
 	res.status(404).sendFile(__dirname + '/client/not-found.html');
 });
+
+
 console.log("Server started.");
