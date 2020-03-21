@@ -29,7 +29,7 @@ for entry in root:
             else:
                 senses.add(field.attrib['synset'])
         for s in senses:
-            words[key]= words.get(key, []) + [{'node-type': type, 'synset': {'id': s}}]
+            words[key]= words.get(key, []) + [{'nodeType': type, 'synset': {'id': s}}]
             sense_sets[s] = sense_sets.get(s, set()) | {key}
 
 for word in words:
