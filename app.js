@@ -44,14 +44,9 @@ app.get('/api/lsg/:id', function(req, res){
 	if(req.query.depth !== null) depth = req.query.depth;
 	if (depth > 3) depth = 3;
 	else if (depth < 1) depth = 1;
+	if (req.query.callerIdentity !== null) console.log(req.query.callerIdentity);
+	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Content-Type', 'application/json');
-	if (req.query.callerIdentity === 'localhost') {
-		res.setHeader('Access-Control-Allow-Origin', '*');
-	}
-	else {
-		console.log('Hello' + req.query.callerIdentity);
-		res.setHeader('Access-Control-Allow-Origin', 'soceanainn.com');
-	}
 	res.status(200).json(lsg.fetchGraph(req.params.id, depth));
 });
 
