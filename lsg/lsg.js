@@ -12,7 +12,6 @@ module.exports = {
         stack.push({'id': word, 'depth': depth});
         parseStack();
 
-
         return {"nodes": nodes, "edges": edges};
 
         function parseStack(someWord, someDepth) {
