@@ -59,7 +59,7 @@ function submit(){ //Submit selected letters
             score += getScore(letters.length);
             wordsFound.push(letters);
             document.getElementById("score").innerText = "Scór: " + score;
-            document.getElementById("found").innerHTML += '<a class="text-dark" target="_blank" href="https://www.tearma.ie/q/' + encodeURI(letters)+ '">' + letters + '</a> ';
+            document.getElementById("found").innerHTML += '<a class="text-dark" target="_blank" href="https://www.teanglann.ie/ga/fgb/' + encodeURI(letters)+ '">' + letters + '</a> ';
         } else alert("Ní focal é/í '" + letters + "'");
     } else alert("D'aimsigh tú an focal '" + letters + "' cheana");
     reset();
