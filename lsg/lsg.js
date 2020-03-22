@@ -6,8 +6,11 @@ module.exports = {
         let edges = [];
         let seenNodes = [];
         let stack = [];
-
-        if (Object.keys(graph.nodes).indexOf(word) === -1) return {};
+        word = word.trim();
+        if (Object.keys(graph.nodes).indexOf(word) === -1) {
+            word = word.toLowerCase();
+            if (Object.keys(graph.nodes).indexOf(word) === -1) return {};
+        }
 
         stack.push({'id': word, 'depth': depth});
         parseStack();
