@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
     <link href="/client/assets/css/custom-styling.css" rel="stylesheet">
+    <link href="/client/assets/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -39,14 +40,22 @@
     </nav>
 </header>
 <main role="main" class="container">
-    <div style="text-align: center;"><img src="/client/assets/images/search.svg"></div>
-    <h2 style="text-align: center;">An bhfuil tú caillte?</h2>
-    <div class="row mt-5">
-        <div class="col-12 col-sm-12 col-md-6 offset-md-3 d-flex flex-column">
-            <p>
-                Ní féidir teacht ar an leathanach go raibh tú ag lorg. Seans go bhfuil sé imithe ón suíomh, nó bogtha
-                áit éigin eile.
-            </p>
+    <!-- Username Selection -->
+    <div id="signIn" style="text-align: center;" class="mt-5">
+        <h3>Fáilte go Preab san Ól!</h3>
+        <label for="username">Ainm Úsáideora: </label><input id="username" type="text" class="ml-1"/>
+        <span class="btn btn-success ml-3" onclick="login()">Logáil isteach</span>
+    </div>
+
+    <!-- Create or join a game -->
+    <div id="lobby" style="display:none">
+        <label for="gameName">Ainm an Cluiche: </label><input id="gameName" type="text"/><br>
+        <label for="gamePassword">Pasfhocal (cluichí príobháideacha amháin): </label><input id="gamePassword" type = "text"/><br>
+        <span class="btn btn-success" onclick="createGame()">Cruthaigh Cluiche</span>
+        <span class="btn btn-warning" onclick="joinGame()">Ceangail le Cluiche Eile</span>
+        <div class="mt-5">
+            <h3>Liosta na gCluichí Poiblí: <span onclick="refreshPublicGames()" class="btn btn-light"><i class="fa fa-refresh"></i></span></h3>
+            <div id="gameList"></div>
         </div>
     </div>
 </main>
@@ -55,8 +64,61 @@
             Séamus Ó Ceanainn
         </a></span>
 </footer>
-</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js"></script>
+<script>
+    const socket = io('/preab');
 
+    socket.on('loggedIn', function (games){
+        displayLobby(games);
+    });
+
+    socket.on('refreshGameList', function(games){
+        document.getElementById('gameList').innerHTML = games;
+    });
+
+    socket.on('createdGame', function(name){
+        console.log("Created game: " + name);
+    });
+
+    socket.on('playerJoined', function(name){
+       console.log(name + " joined your game");
+    });
+
+    socket.on('joinedGame', function(name){
+        console.log("Joined game: " + name);
+    });
+
+    function login(){
+        socket.emit('login', document.getElementById('username').value.trim());
+    }
+
+    function refreshPublicGames(){
+        socket.emit('fetchGames');
+    }
+
+    function createGame(){
+        socket.emit('createGame', getGameConnectionInfo());
+    }
+
+    function joinGame(){
+        socket.emit('joinGame', getGameConnectionInfo());
+    }
+
+    function getGameConnectionInfo(){
+        const name = document.getElementById('gameName').value.trim();
+        const password = document.getElementById('gamePassword').value.trim();
+        if (password !== "") return {"name": name, "password": password};
+        return {"name": name};
+    }
+
+    function displayLobby(games){
+        document.getElementById('signIn').style.display = 'none';
+        document.getElementById('lobby').style.display = 'block';
+        document.getElementById('gameList').innerHTML = games;
+    }
+
+</script>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+</body>
 </html>

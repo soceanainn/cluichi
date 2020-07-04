@@ -4,11 +4,17 @@
 let express = require('express');
 let app = express();
 let server = require('http').Server(app);
+let io = require('socket.io')(server);
+const preab = require('./preab/preab.js')(io);
 
 server.listen(process.env.PORT || 2000);
 
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html')
+});
+
+app.get('/preab', function(req, res) {
+	res.sendFile(__dirname + '/preab/index.html')
 });
 
 app.get('/cartai',function(req, res) {
