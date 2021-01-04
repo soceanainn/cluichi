@@ -41,8 +41,8 @@ app.get('/sitemap.xml', function(req, res) {
 	res.sendFile(__dirname + '/sitemap.xml')
 });
 
-app.use('/client',express.static(__dirname + '/client'));
-app.use('/scealta',express.static(__dirname + '/scealta'));
+app.use('/client',express.static('client'));
+app.use(express.static('client'));
 
 const lsg = require('./scripts/lsg/lsg.js');
 app.get('/api/lsg/:id', function(req, res){
