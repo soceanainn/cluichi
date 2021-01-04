@@ -4,11 +4,17 @@
 let express = require('express');
 let app = express();
 let server = require('http').Server(app);
+let io = require('socket.io')(server);
+const preab = require('./game-server/preab.js')(io);
 
 server.listen(process.env.PORT || 2000);
 
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html')
+});
+
+app.get('/preab', function(req, res) {
+	res.sendFile(__dirname + '/client/preab/index.html')
 });
 
 app.get('/cartai',function(req, res) {
@@ -35,10 +41,10 @@ app.get('/sitemap.xml', function(req, res) {
 	res.sendFile(__dirname + '/sitemap.xml')
 });
 
-app.use('/client',express.static(__dirname + '/client'));
-app.use('/scealta',express.static(__dirname + '/scealta'));
+app.use('/client',express.static('client'));
+app.use(express.static('client'));
 
-const lsg = require('./lsg/lsg.js');
+const lsg = require('./scripts/lsg/lsg.js');
 app.get('/api/lsg/:id', function(req, res){
 	let depth = 1;
 	if(req.query.depth !== null) depth = req.query.depth;

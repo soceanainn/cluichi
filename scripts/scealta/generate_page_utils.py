@@ -45,7 +45,7 @@ def main():
             if number not in goto:
                 print('WARN: Ní féidir ailt %s a shroichint' % number)
 
-    with open(sys.argv[2] + '/sceal.js', 'w+') as fd:
+    with open('../../client/scealta/' + sys.argv[2] + '/sceal.js', 'w+') as fd:
         fd.write('const sceal = ' + json.dumps(output, ensure_ascii=False) + ';\n')
 
 

@@ -1,7 +1,10 @@
-## CartaiVsDaonnachta
+## CartaiVsDaonnachta [WIP]
 Cards Against Humanity Clone, with in-game and universal chat.
 
 Uses Node.js, Express and Socket.io
+
+`cartai.html` is an in-progress rewrite of the original `index.html` file, so will gradually contain more and more duplicate code until 
+it can replace `index.html` completely.
 
 ### To-Do:
 - Fix bugs (currently broken)

@@ -1,135 +1,27 @@
-//----------------------------------------------
-// 			CONSTANTS
-//----------------------------------------------
+const config = {
+    maxNumPlayers: 5, 				// Number of players allowed in each game at a time
+    minNumPlayers: 3, 				// Number of players needed to start the game
+    chatEnabled: true,              // Display chat underneath game
+    universalChatEnabled: true		// Allow players to select universal chat
+};
 
-let MAX_SERVER_PLAYERS = 100; 			// Number of players allowed on server at one time
-let MAX_GAME_PLAYERS = 5; 				// Number of players allowed in each game at a time
-let MIN_GAME_PLAYERS = 3; 				// Number of players needed to start the game
+const gameLogic = require('./shared/game-logic.js');
+const chat = require('./shared/chat.js');
 
-let CHAT = true;						// Display chat underneath game
-let UNIVERSAL_CHAT = true;				// Allow players to select universal chat
+module.exports = Cartai;
 
-let TRACK_CONTROLS = false;				// Capture key press events
-let INCLUDE_WASD = false;				// Allow WASD to be used as arrow keys
-
-//-----------------------------------------------------
-// 				Set Up Sockets, Players and Game
-//-----------------------------------------------------
-
-let io = require('socket.io')(server);
-let numberOfPlayers = 0; //Number of players in lobby
-
-// Keep track of sockets, players usernames,games, and scores in use
-let SOCKET_LIST = [];
-let PLAYER_LIST = [];	// str name, int host, int score
-let GAME_LIST = [];		// str name, int numPlayers, str gamePassword, bool started
-
-// Generate a list of public games every 5 seconds
-let publicGames;
-setInterval(function() {
-    publicGames = "Liosta na gCluichí Poiblí: </div><div>";
-    for(let i in GAME_LIST){
-        if (GAME_LIST[i].started === false) // Waiting to start
-            if (GAME_LIST[i].gamePassword === "") //No password
-                if(GAME_LIST[i].numPlayers < MAX_GAME_PLAYERS) // Isn't full
-                    publicGames += GAME_LIST[i].name + "</div><div>";
-    }
-}, 3000);
-
-
-io.sockets.on('connection', function(socket){
-    //If lobby is full
-    if (numberOfPlayers >= MAX_SERVER_PLAYERS){
-        socket.emit('lobbyFull');
-        console.log("Lobby full error");
-        socket.disconnect();
-        return;
-    }
-    socket.id = Math.floor(Math.random()*MAX_SERVER_PLAYERS);
-    // Register Socket upon Connection
-    while (SOCKET_LIST[socket.id] != null){//Generate a random socket id for each new connection
-        socket.id++;
-    }
-    SOCKET_LIST[socket.id] = socket;
-    numberOfPlayers++;
-
-    // When user disconnects
-    socket.on('disconnect',function(){
-        disconnectUser(socket);
-        numberOfPlayers--;
+function Cartai(io) {
+    const nsp = io.of('/cartai');
+    nsp.on('connection', function(socket){
+        gameLogic.registerSocketEvents(socket, config);
+        if (config.chatEnabled) chat.registerSocketEvents(socket, gameLogic);
     });
-
-    // User Sign In
-    socket.on('signIn',function(username){
-        if (isUsernameTaken(username)){
-            socket.emit('signInResponse',{success:false});
-        } else { // If username is free add user
-            addUser(username, socket);
-            socket.emit('signInResponse',{success:true});
-        }
-    });
-
-    // Call for public games
-    socket.on('gameSelection', function (){
-        socket.emit('publicGames', publicGames);
-    });
-
-    // Game Creation
-    socket.on('createGame',function(name, gamePassword){
-        if (findGame(name) !== -1){
-            socket.emit('createGameResponse',{success:false});
-        } else { // If game name is free join game as first users
-            createGame(name, socket, gamePassword);
-            socket.emit('createGameResponse',{success:true, chat:CHAT, universal:UNIVERSAL_CHAT, controls:TRACK_CONTROLS, wasd:INCLUDE_WASD});
-        }
-    });
-
-    // Joining a Game
-    socket.on('joinGame',function(name, gamePassword){
-        let i = findGame(name);
-        if (i === -1){ // If game doesn't exist
-            socket.emit('joinGameResponse',{success:false, gameExist:false});
-        } else { // If game exists
-            if(GAME_LIST[i].gamePassword === gamePassword){
-                if(GAME_LIST[i].numPlayers < MAX_GAME_PLAYERS){
-                    if(GAME_LIST[i].started){
-                        socket.emit('joinGameResponse',{success:false, started:true});
-                    } else{
-                        joinGame(socket, i);
-                        socket.emit('joinGameResponse',{success:true, chat:CHAT, universal:UNIVERSAL_CHAT, controls:TRACK_CONTROLS, wasd:INCLUDE_WASD});
-                    }
-                } else
-                    socket.emit('joinGameResponse', {success: false, gameFull:true});
-            } else
-                socket.emit('joinGameResponse',{success:false, gameExist:true});
-        }
-    });
-
-    //	Universal Chat
-    socket.on('sendMsgToServer',function(data){ // When user sends a message
-        for(let i in SOCKET_LIST){
-            let str = PLAYER_LIST[socket.id].name + ': ' + data;
-            SOCKET_LIST[i].emit('addToChat',str);
-        }
-    });
-
-    //	In-game Chat
-    socket.on('sendMsgToGame',function(data){ // When user sends a message
-        for(let i in PLAYER_LIST){
-            if (PLAYER_LIST[socket.id].host === PLAYER_LIST[i].host){
-                let str = PLAYER_LIST[socket.id].name + ': ' + data;
-                SOCKET_LIST[i].emit('addToGame',str);
-            }
-        }
-    });
+}
 
 //---------------------------------------------
 //			CARDS AGAINST HUMANITY
 //---------------------------------------------
-
-    // Read in a deck of answer cards
-
-
+function cards(socket){
     // When a user plays a card
     socket.on('playedCard', function(data){
         let output = {playerId : socket.id, str : data};

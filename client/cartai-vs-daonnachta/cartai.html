@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ie">
+<head>
+    <title>Cluichí as Gaeilge</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+    <link href="/client/assets/css/custom-styling.css" rel="stylesheet">
+    <link href="/client/assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-160761764-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-160761764-1');
+    </script>
+    <meta name="google-site-verification" content="V34nnYN7WFYyk5LWpDUxjR46HjMCim7oiVjw1i_Hx8g" />
+
+    <style>
+        #chat-input {
+            width: 100%;
+        }
+
+        #chat-text {
+            height: 20vh;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light border-bottom shadow-sm">
+        <a class="navbar-brand" href="/">
+            <img src="/client/assets/images/controller.svg" alt="Controller icon" width="36" height="36" title="Baile"/>
+            Cluichi.ie
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+            <a class="p-2 ml-2 btn btn-light" href="/boggle">Boggle</a>
+            <a class="p-2 ml-2 btn btn-light" href="/ris">Rís</a>
+            <a class="p-2 ml-2 btn btn-light disabled" href="/risk">Éire Aontaithe (Risk)</a>
+            <a class="p-2 ml-2 btn btn-light disabled" href="/scealta">Scéalta</a>
+            <a class="p-2 ml-2 btn btn-outline-primary" href="/eolas">Eolas</a>
+        </div>
+    </nav>
+</header>
+<main role="main" class="container">
+    <!-- Username Selection -->
+    <div id="signIn" style="text-align: center;" class="mt-5">
+        <h3>Fáilte go Cartaí i gCoinne Daonnachta!</h3>
+        <label for="username">Ainm Úsáideora: </label><input id="username" type="text" class="ml-1" onkeypress="if(event.keyCode === 13) login();"/>
+        <span class="btn btn-success ml-1 col-10 col-md-4" onclick="login();">Logáil isteach</span>
+    </div>
+
+    <!-- Create or join a game -->
+    <div id="lobby" style="display:none">
+        <label for="gameName">Ainm an Cluiche: </label><input id="gameName" type="text" class="ml-1"/><br>
+        <label for="gamePassword">Pasfhocal (cluichí príobháideacha amháin): </label><input id="gamePassword" type="text" class="ml-1"/><br>
+        <span class="btn btn-success col-12 col-md-4 mt-3" onclick="createGame()">Cruthaigh Cluiche</span>
+        <span class="btn btn-warning col-12 col-md-4 mt-3" onclick="joinGame()">Ceangail le Cluiche Eile</span>
+        <div class="mt-5">
+            <h3>Liosta na gCluichí Poiblí: <span onclick="refreshPublicGames()" class="btn btn-light"><i class="fa fa-refresh"></i></span></h3>
+            <div id="gameList"></div>
+        </div>
+    </div>
+
+    <!-- Game lobby -->
+    <div id="game-lobby" style="display: block">
+        <!-- Pre-game message -->
+        <h2 id="pregame" class="mt-5 mb-5" style="text-align: center">Ag fanacht ar breis imreoirí</h2>
+        <div id = 'vote-to-start' class="btn btn-success offset-1 col-10 offset-md-4 col-md-4 disabled" aria-disabled="true" onclick="voteToStart();">Vótáil le tosú</div>
+
+        <!-- Chat -->
+        <div id="chat">
+            <hr/>
+            <div id = "chat-text-title" style= "text-align: center;">
+                <h4><label for="chats">Comhrá:</label></h4>
+            </div>
+            <hr />
+            <div id="chat-text" style="overflow-y:scroll"></div>
+            <label for="chat-input"></label><input id="chat-input" type="text" onkeypress="if (event.keyCode === 13) sendChat();"/>
+        </div>
+    </div>
+</main>
+<footer class="footer" style="text-align: center;">
+        <span class="text-muted">Cruthaithe ag: <a class="text-dark" target="_blank" href="https://soceanainn.com">
+            Séamus Ó Ceanainn
+        </a></span>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js"></script>
+<script>
+    const socket = io('/cartai');
+
+    socket.on('loggedIn', function (games){
+        displayPublicLobby(games);
+    });
+
+    socket.on('refreshGameList', function(games){
+        document.getElementById('gameList').innerHTML = games;
+    });
+
+    socket.on('createdGame', function(name){
+        displayGameLobby(name)
+    });
+
+    socket.on('playerJoined', function(name){
+        addToChat("<i>Cheangail " + name + " leis an gcluiche</i>");
+    });
+
+    socket.on('playerDisconnected', function(name){
+        addToChat("<i>Dícheangail " + name + " ón gcluiche</i>");
+    });
+
+    socket.on('joinedGame', function(name){
+        displayGameLobby(name);
+        addToChat("<i>Cheangail tú leis an gcluiche</i>");
+    });
+
+    socket.on('addToChat',function(data){
+        addToChat(data);
+    });
+
+    socket.on('minimumPlayersMet', function(){
+        displayVoteToStart();
+    });
+
+    socket.on('minimumPlayersNotMet', function(){
+        displayNotEnoughPlayers();
+    });
+
+    function login(){
+        socket.emit('login', document.getElementById('username').value.trim());
+    }
+
+    function refreshPublicGames(){
+        socket.emit('fetchGames');
+    }
+
+    function createGame(){
+        socket.emit('createGame', getGameConnectionInfo());
+    }
+
+    function joinGame(){
+        socket.emit('joinGame', getGameConnectionInfo());
+    }
+
+    function getGameConnectionInfo(){
+        const name = document.getElementById('gameName').value.trim();
+        const password = document.getElementById('gamePassword').value.trim();
+        if (password !== "") return {"name": name, "password": password};
+        return {"name": name};
+    }
+
+    function displayPublicLobby(games){
+        document.getElementById('signIn').style.display = 'none';
+        document.getElementById('lobby').style.display = 'block';
+        document.getElementById('gameList').innerHTML = games;
+    }
+
+    function displayGameLobby(){
+        document.getElementById('lobby').style.display = 'none';
+        document.getElementById('game-lobby').style.display = 'block';
+    }
+
+    function sendChat(){
+        let message = document.getElementById('chat-input').value.trim();
+        if (message.length > 0) {
+            socket.emit('sendChat', message);
+            document.getElementById('chat-input').value = '';
+        }
+    }
+
+    function addToChat(data){
+        let chatText = document.getElementById('chat-text');
+        chatText.innerHTML += '<div>' + data + '</div>';
+        chatText.scrollTop = chatText.scrollHeight;
+    }
+
+    function displayVoteToStart(){
+        document.getElementById('vote-to-start').className = "btn btn-success offset-1 col-10 offset-md-4 col-md-4";
+        document.getElementById('vote-to-start').setAttribute('aria-disabled', "false");
+        document.getElementById('vote-to-start').style.display = 'block';
+        document.getElementById('pregame').innerText = 'Ag fanacht ar go leor vótaí le tosú';
+    }
+
+    function displayNotEnoughPlayers(){
+        document.getElementById('pregame').innerText = 'Ag fanacht ar breis imreoirí';
+        document.getElementById('vote-to-start').style.display = 'none';
+    }
+
+    function voteToStart(){
+        if (document.getElementById('vote-to-start').getAttribute('aria-disabled') !== "true") {
+            socket.emit('voteToStart');
+            document.getElementById('vote-to-start').setAttribute('aria-disabled', "true");
+            document.getElementById('vote-to-start').className += " disabled";
+        }
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+</body>
+</html>
