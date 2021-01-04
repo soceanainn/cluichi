@@ -1,17 +1,38 @@
+#!/usr/bin/env bash
+
+if [[ $1  == '' || $2 == '' || $3 == '' ]]; then
+    echo "Expected '$0 <resources/downloaded_file_name.tsv> <title> <page_name> <background_image_url>'"
+    exit 1
+fi
+
+mkdir "../../client/scealta/$3"
+echo "Source File: $1"
+echo "Page Title: $2"
+echo "Page Name: $3"
+echo "Background Image: $4"
+
+python3 generate_page_utils.py $1 $3
+
+BACKGROUND_IMAGE=""
+FILE_EXTENSION=$(echo "$url" | sed 's:.*\.::')
+curl -o "../../client/scealta/$3/background.${FILE_EXTENSION}" -L $url && \
+BACKGROUND_IMAGE="background: url('background.${FILE_EXTENSION}') no-repeat center center fixed;"
+
+cat << EOF > ../../client/scealta/$3/index.html
 <!DOCTYPE html>
 <html lang="ie">
 <head>
-   <title>Oisín i dTír na nÓg</title>
+   <title>$2</title>
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
-   <link href="/client/assets/css/custom-styling.css" rel="stylesheet">
+   <link href="/client/assets/custom-styling.css" rel="stylesheet">
    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
    <style>
        body {
            background-color: #dae0e5;
-           background: url('background.jpg') no-repeat center center fixed;
+           $BACKGROUND_IMAGE
            -webkit-background-size: 100% 100%;
            -moz-background-size: 100% 100%;
            -o-background-size: 100% 100%;
@@ -33,7 +54,7 @@
    <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light border-bottom shadow-sm">
        <a class="navbar-brand" href="/">
            <img src="/client/assets/images/controller.svg" alt="Controller icon" width="36" height="36" title="Baile"/>
-           Cluichi.ie
+           Cluichí as Gaeilge
        </a>
        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
            <span class="navbar-toggler-icon"></span>
@@ -48,7 +69,7 @@
    </nav>
 </header>
 <main role="main" class="container">
-   <h2 style="text-align: center; background-color: #dae0e5; border-radius: 5px;" class="p-2">Oisín i dTír na nÓg</h2>
+   <h2 style="text-align: center; background-color: #dae0e5; border-radius: 5px;" class="p-2">$2</h2>
    <div class="row pb-3 pt-5 px-5 my-5 mx-1 card">
        <div class="col-10 offset-1">
            <h3 id="teideal" style="text-align: center"></h3>
@@ -116,3 +137,4 @@
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
 </html>
+EOF

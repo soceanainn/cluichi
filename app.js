@@ -44,7 +44,7 @@ app.get('/sitemap.xml', function(req, res) {
 app.use('/client',express.static(__dirname + '/client'));
 app.use('/scealta',express.static(__dirname + '/scealta'));
 
-const lsg = require('./lsg/lsg.js');
+const lsg = require('./scripts/lsg/lsg.js');
 app.get('/api/lsg/:id', function(req, res){
 	let depth = 1;
 	if(req.query.depth !== null) depth = req.query.depth;
