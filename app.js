@@ -5,7 +5,8 @@ let express = require('express');
 let app = express();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
-const preab = require('./game-server/preab.js')(io);
+
+require('./game-server/preab.js')(io);
 
 server.listen(process.env.PORT || 2000);
 
@@ -55,8 +56,7 @@ app.get('/api/lsg/:id', function(req, res){
 	res.status(200).json(lsg.fetchGraph(req.params.id, depth));
 });
 
-//The 404 Route (ALWAYS Keep this as the last route)
-app.get('*', function(req, res){
+app.get('*', function(req, res){ //404 Route (keep as last route)
 	res.status(404).sendFile(__dirname + '/client/not-found.html');
 });
 

@@ -13,13 +13,13 @@ Node.js and npm are required (see installation instructions [here](https://docs.
 - `node -v && npm -v`: verify that node.js and npm are installed
 - `npm install`: install all dependencies required by the project
 - `npm start`: starts the project, running at `localhost:2000`
-- `node scripts/sitemap_generator.js`: update sitemap
+- `npm run sitemap`: update sitemap
 
 ### Project Structure
 
-- `client/`: Stores all client resources. The top level `assets/` folder contains general purpose / shared resources, with game specific 
-resources stored in game specific subfolders. Each game subfolder should contain a README with specific details for that game.
-- `game-server/`: Stores server side JS scripts, needed for multiplayer games. The `shared/` folder contains shared server side scripts.
-Script names should match game subfolder names from `client/`. 
+- `client/`: Stores all client resources. The top level `assets/` directory contains general purpose / shared resources, with game specific 
+resources stored in game specific subdirectories. Each game subdirectory should contain a README with specific details for that game.
+- `game-server/`: Stores server side JS scripts, needed for multiplayer games. The `shared/` directory contains shared server side scripts.
+Script names should match game subdirectory names from `client/`. 
 - `scripts/`: Contains scripts used to generate resources needed by the project (e.g. sitemap generation script).
 - `app.js`: Main server script.
