@@ -3,19 +3,25 @@
   "version": "1.0.0",
   "description": "Browser based games in Irish",
   "main": "app.js",
+  "engines": {
+    "node": "^14.16.0",
+    "npm": ">=7.7.5"
+  },
   "dependencies": {
     "express": "^4.17.1",
-    "sitemap-generator": "^8.4.2",
-    "socket.io": "^1.7.2"
+    "socket.io": "^4.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.7",
+    "sitemap-generator": "^8.5.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/soceanainn/cluichi.git"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "sitemap": "node scripts/sitemap_generator.js"
   },
-  "author": "Séamus Ó Ceanainn <seamusoceanainn@gmail.com>",
-  "license": "ISC"
+  "author": "Séamus Ó Ceanainn <seamusoceanainn@gmail.com>"
 }
