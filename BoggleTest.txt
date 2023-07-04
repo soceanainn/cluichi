@@ -1,0 +1,34 @@
+*** Settings ***
+Documentation    Test script to verify the functionality of boggle.js
+Library          SeleniumLibrary
+Library          OperatingSystem
+
+*** Variables ***
+${BROWSER}       Chrome
+${URL}           http://192.168.0.129:2000/boggle  # Replace with the actual URL of the HTML file with the boggle game
+
+
+*** Test Cases ***
+Verify isConnected Function
+    Open Browser  ${URL}  ${BROWSER}
+    Sleep  2s   # Wait for the page to load
+
+    # Click on the letters to make selections
+    Click on Letter  1
+    Click on Letter  2
+    Click on Letter  3
+
+    # Test valid letter selection
+    ${is_valid}  Execute JavaScript  isConnected(1)
+    Should Be True  ${is_valid}
+
+
+    # Test other cases
+    ${is_valid}  Execute JavaScript  isConnected(2)
+    Should Be True  ${is_valid}
+
+
+*** Keywords ***
+Click on Letter
+    [Arguments]  ${letter_index}
+    Click Element  css=#row0 > div:nth-child(${letter_index})
