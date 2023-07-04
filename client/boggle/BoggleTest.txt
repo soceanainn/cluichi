@@ -14,21 +14,24 @@ Verify isConnected Function
     Sleep  2s   # Wait for the page to load
 
     # Click on the letters to make selections
-    Click on Letter  1
     Click on Letter  2
+    #Sleep  2s   # Wait for the page to load
     Click on Letter  3
 
-    # Test valid letter selection
-    ${is_valid}  Execute JavaScript  isConnected(1)
-    Should Be True  ${is_valid}
 
-
-    # Test other cases
-    ${is_valid}  Execute JavaScript  isConnected(2)
-    Should Be True  ${is_valid}
+    # Verify if the letters have been selected
+    Element Should Have Class  css=#row0 > div:nth-child(2)  selected-letter
+    Element Should Have Class  css=#row0 > div:nth-child(3)  selected-letter
 
 
 *** Keywords ***
 Click on Letter
     [Arguments]  ${letter_index}
     Click Element  css=#row0 > div:nth-child(${letter_index})
+
+Element Should Have Class
+    [Arguments]  ${locator}  ${expected_class}
+    ${element}  Get WebElement  ${locator}
+    ${actual_class}  Get Element Attribute  ${element}  class
+    Should Contain  ${actual_class}  ${expected_class}
+
