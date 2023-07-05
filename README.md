@@ -1,4 +1,4 @@
-# Cluichi.ie
+# Cluichi.ie --the website is currently down
 ## Games as Gaeilge*
 
 This project stores the code behind the website [cluichi.ie](https://cluichi.ie).
